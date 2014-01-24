@@ -31,7 +31,7 @@ function addBag() {
 	bag.type = b2Body.b2_dynamicBody;
 	fixDef.shape = new b2CircleShape(0.4);
 	bag.position.x = 8;
-	bag.position.y = 5;
+	bag.position.y = 1;
 	bag = world.CreateBody(bag).CreateFixture(fixDef);
 
 	var md = new b2MouseJointDef();
@@ -44,8 +44,6 @@ function addBag() {
 }
 
 function init() {
-
-
             //create ground
             bodyDef.type = b2Body.b2_staticBody;
             //Top bottom limits
