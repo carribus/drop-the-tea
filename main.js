@@ -26,16 +26,19 @@
 
       	//create ground
       	bodyDef.type = b2Body.b2_staticBody;
+		//Top bottom limits
       	fixDef.shape = new b2PolygonShape;
-      	fixDef.shape.SetAsBox(20, 2);
-      	bodyDef.position.Set(10, 400 / 30 + 1.8);
+      	fixDef.shape.SetAsBox(40, 2);
+      	bodyDef.position.Set(10, 900 / 30 + 1.8);
       	world.CreateBody(bodyDef).CreateFixture(fixDef);
       	bodyDef.position.Set(10, -1.8);
       	world.CreateBody(bodyDef).CreateFixture(fixDef);
-      	fixDef.shape.SetAsBox(2, 14);
-      	bodyDef.position.Set(-1.8, 13);
+
+		//Left Right
+		fixDef.shape.SetAsBox(2, 18);
+      	bodyDef.position.Set(-1.8, 17);
       	world.CreateBody(bodyDef).CreateFixture(fixDef);
-      	bodyDef.position.Set(21.8, 13);
+      	bodyDef.position.Set(1400 / 30 + 1.8, 13);
       	world.CreateBody(bodyDef).CreateFixture(fixDef);
 
       	//create the peg
