@@ -1,3 +1,5 @@
+var peg, bag;
+
       function init() {
       	var b2Vec2 = Box2D.Common.Math.b2Vec2,
       		b2AABB = Box2D.Collision.b2AABB,
@@ -42,36 +44,44 @@
       	world.CreateBody(bodyDef).CreateFixture(fixDef);
 
       	//create the peg
-      	bodyDef.type = b2Body.b2_staticBody;
+      	peg = new b2BodyDef;
+      	peg.type = b2Body.b2_staticBody;
       	fixDef.shape = new b2CircleShape(0.1);
-      	bodyDef.position.x = 10;
-      	bodyDef.position.y = 1;
-      	world.CreateBody(bodyDef).CreateFixture(fixDef);
+      	peg.position.x = 10;
+      	peg.position.y = 1;
+      	peg = world.CreateBody(peg).CreateFixture(fixDef);
+
+
+      	//create the bag
+      	bag = new b2BodyDef;
+      	bag.type = b2Body.b2_dynamicBody;
+      	fixDef.shape = new b2CircleShape(0.4);
+      	bag.position.x = 8;
+      	bag.position.y = 5;
+      	bag = world.CreateBody(bag).CreateFixture(fixDef);
+
 
       	//create the bag attached to the peg
 
 
-      	//create the cup
-
-
       	//create some objects
-      	bodyDef.type = b2Body.b2_dynamicBody;
-      	for (var i = 0; i < 10; ++i) {
-      		if (Math.random() > 0.5) {
-      			fixDef.shape = new b2PolygonShape;
-      			fixDef.shape.SetAsBox(
-      				Math.random() + 0.1 //half width
-      				, Math.random() + 0.1 //half height
-      			);
-      		} else {
-      			fixDef.shape = new b2CircleShape(
-      				Math.random() + 0.1 //radius
-      			);
-      		}
-      		bodyDef.position.x = Math.random() * 10;
-      		bodyDef.position.y = Math.random() * 10;
-      		world.CreateBody(bodyDef).CreateFixture(fixDef);
-      	}
+      	// bodyDef.type = b2Body.b2_dynamicBody;
+      	// for (var i = 0; i < 10; ++i) {
+      	// 	if (Math.random() > 0.5) {
+      	// 		fixDef.shape = new b2PolygonShape;
+      	// 		fixDef.shape.SetAsBox(
+      	// 			Math.random() + 0.1 //half width
+      	// 			, Math.random() + 0.1 //half height
+      	// 		);
+      	// 	} else {
+      	// 		fixDef.shape = new b2CircleShape(
+      	// 			Math.random() + 0.1 //radius
+      	// 		);
+      	// 	}
+      	// 	bodyDef.position.x = Math.random() * 10;
+      	// 	bodyDef.position.y = Math.random() * 10;
+      	// 	world.CreateBody(bodyDef).CreateFixture(fixDef);
+      	// }
 
       	//setup debug draw
       	var debugDraw = new b2DebugDraw();
@@ -131,30 +141,22 @@
       	}
 
       	//update
+      	var attach = false;
 
       	function update() {
 
-      		if (isMouseDown && (!mouseJoint)) {
-      			var body = getBodyAtMouse();
-      			if (body) {
+      		if (!attach) {
+      			if (peg) {
       				var md = new b2MouseJointDef();
-      				md.bodyA = world.GetGroundBody();
-      				md.bodyB = body;
-      				md.target.Set(mouseX, mouseY);
+      				md.bodyA = peg.m_body;
+      				md.bodyB = bag.m_body;
+      				md.target.Set(peg.m_body.m_xf.position.x, peg.m_body.m_xf.position.y);
       				md.collideConnected = true;
-      				md.maxForce = 300.0 * body.GetMass();
+      				md.maxForce = 20;
       				mouseJoint = world.CreateJoint(md);
-      				body.SetAwake(true);
+      				//bag.SetAwake(true);
       			}
-      		}
-
-      		if (mouseJoint) {
-      			if (isMouseDown) {
-      				mouseJoint.SetTarget(new b2Vec2(mouseX, mouseY));
-      			} else {
-      				world.DestroyJoint(mouseJoint);
-      				mouseJoint = null;
-      			}
+      			attach = true;
       		}
 
       		world.Step(1 / 60, 10, 10);
