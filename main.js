@@ -1,4 +1,5 @@
 var peg, bag;
+
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
 	b2AABB = Box2D.Collision.b2AABB,
 	b2BodyDef = Box2D.Dynamics.b2BodyDef,
@@ -45,19 +46,22 @@ function addBag() {
 function init() {
 
 
-	//create ground
-	bodyDef.type = b2Body.b2_staticBody;
-	fixDef.shape = new b2PolygonShape;
-	fixDef.shape.SetAsBox(20, 2);
-	bodyDef.position.Set(10, 400 / 30 + 1.8);
-	world.CreateBody(bodyDef).CreateFixture(fixDef);
-	bodyDef.position.Set(10, -1.8);
-	world.CreateBody(bodyDef).CreateFixture(fixDef);
-	fixDef.shape.SetAsBox(2, 14);
-	bodyDef.position.Set(-1.8, 13);
-	world.CreateBody(bodyDef).CreateFixture(fixDef);
-	bodyDef.position.Set(21.8, 13);
-	world.CreateBody(bodyDef).CreateFixture(fixDef);
+            //create ground
+            bodyDef.type = b2Body.b2_staticBody;
+            //Top bottom limits
+            fixDef.shape = new b2PolygonShape;
+            fixDef.shape.SetAsBox(40, 2);
+            bodyDef.position.Set(10, 900 / 30 + 1.8);
+            world.CreateBody(bodyDef).CreateFixture(fixDef);
+            bodyDef.position.Set(10, -1.8);
+            world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+            //Left Right
+            fixDef.shape.SetAsBox(2, 18);
+            bodyDef.position.Set(-1.8, 17);
+            world.CreateBody(bodyDef).CreateFixture(fixDef);
+            bodyDef.position.Set(1400 / 30 + 1.8, 13);
+            world.CreateBody(bodyDef).CreateFixture(fixDef);
 
 	//create the peg
 	peg = new b2BodyDef;
@@ -176,3 +180,4 @@ function init() {
 
 
 };
+
