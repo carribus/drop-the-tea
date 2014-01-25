@@ -6,7 +6,7 @@
       <link href="/style.css" rel="stylesheet">
    </head>
 
-   <body onload="init();">
+   <body>
 
       <div id="main">
       
@@ -16,7 +16,28 @@
          <canvas id="canvas" width="1400" height="900"></canvas>
 
          <button class="add-bag" onclick="addBag()">Add Bag</button>
-         <button class="snap-photo" id="snap">Snap Photo</button>
+         <!-- <button class="snap-photo" id="snap">Snap Photo</button> -->
+
+         <div class="camera" id="camera1">
+            <h1>Allow Camera Access Above</h1>
+            <button onclick="next('camera1','camera2')">OK</button>
+         </div>
+
+         <div class="camera hide" id="camera2">
+            <h1>Make a Happy Face</h1>
+            <button onclick="next('camera2','camera3', 'happy')" id="camera1">OK</button>
+         </div>
+
+         <div class="camera hide" id="camera3">
+            <h1>Make a Sad Face</h1>
+            <button onclick="next('camera3', '', 'sad')" id="camera1">OK</button>
+         </div>
+
+         <div id="happy" class="hide">
+         </div>
+
+         <div id="sad" class="hide">
+         </div>
 
       </div>
 

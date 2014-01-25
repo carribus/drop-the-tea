@@ -1,7 +1,7 @@
 var DEBUG_FLAGS = {
     verboseLogging: false,
     motionBlurRender: {
-        enabled: true,
+        enabled: false,
         intensity: 0.2
     }
 }
@@ -198,6 +198,7 @@ function init() {
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                         break;
                         case 1:
+                            fixDef.restitution = 0;
                             fixDef.shape.SetAsBox(s.size.w - 1.78, 2);   
                             bodyDef.position.x = s.position.x - 1.78;
                             bodyDef.position.y = s.position.y - 1.2;
@@ -205,7 +206,12 @@ function init() {
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                             contactListener.on(map.m_body, function(body) {
                             console.info('Cup cup cup. FUck you cup');
-                            })
+                            document.getElementById('happy').style.display = 'block';
+                            setTimeout(function(){
+                              document.getElementById('happy').style.display = 'none';
+                            }, 50);
+                            });
+                            fixDef.restitution = 0.4;
                         break;
                         case 2:
                             fixDef.shape.SetAsBox(0.1, 4);   

@@ -121,14 +121,11 @@ Box2D.Dynamics.b2World.prototype.DrawShapeCustom = function (shape, xf, color, b
 			var axis = xf.R.col1;
 
 			if(body.type == 'bag'){
-				this.m_debugDraw.DrawSolidCircle(center, radius, axis, color);
 				center.x -= 0.7;
 				center.y -= 0.7;
 				this.m_debugDraw.DrawImage(center, radius, axis, color, body.GetAngle());
 				
 			}else{
-
-
 				this.m_debugDraw.DrawSolidCircle(center, radius, axis, color);
 			}
 		}

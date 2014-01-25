@@ -39,3 +39,19 @@ document.getElementById("snap").addEventListener("click", function() {
 });
 
 }, false);
+
+function next(a, b, id){
+   document.getElementById(a).style.display = 'none';
+
+   b = document.getElementById(b);
+
+   if(b){
+      b.style.display = 'block';
+   }else{
+      init();
+   }
+
+   if(id){
+      document.getElementById(id).appendChild(takephoto())
+   }
+};
