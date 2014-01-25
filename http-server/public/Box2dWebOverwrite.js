@@ -124,7 +124,7 @@ Box2D.Dynamics.b2World.prototype.DrawShapeCustom = function (shape, xf, color, b
 				//this.m_debugDraw.DrawSolidCircle(center, radius, axis, color);
 				center.x -= 0.7;
 				center.y -= 0.7;
-				this.m_debugDraw.DrawImage(center, radius, axis, color);
+				this.m_debugDraw.DrawImage(center, radius, axis, color, body.GetAngle());
 				
 			}else{
 
@@ -163,14 +163,19 @@ Box2D.Dynamics.b2World.prototype.DrawShapeCustom = function (shape, xf, color, b
 	}
 }
 
-Box2D.Dynamics.b2DebugDraw.prototype.DrawImage = function (center, radius, axis, color) {
+Box2D.Dynamics.b2DebugDraw.prototype.DrawImage = function (center, radius, axis, color, rotation) {
 
 	var s = this.m_ctx,
 		drawScale = this.m_drawScale,
 		cx = center.x * drawScale,
 		cy = center.y * drawScale;
 
+				s.save();
+				s.translate(cx,cy);
+				s.rotate(rotation + 90);
+								
 
+	this.m_ctx.drawImage(teaImageObj,0,0);
 
-	this.m_ctx.drawImage(teaImageObj,cx,cy);
+	s.restore();
 };

@@ -3,17 +3,43 @@ body {
 	background-color: #111;
 }
 
-#canvas {
-	background-color: #333;
+#main {
+	width: 1400px;
+	height: 900px;
+	position: relative;
+	margin: 0 auto;
 }
 
-/*#gameholder{
-	display:none;
-}*/
+canvas#canvas {
+    margin: 0px auto;
+    width:1400px; 
+    height: 900px; 
+    display: block;
+}
+canvas#vidcan {
+	position: absolute;
+	left: 885px;
+	width: 500px;
+	height: 360px;
+	top: 528px;
+}
 
-.addbag {
+video {
+	-webkit-filter: grayscale(0) blur(59px) saturate(600%);
+	-moz-filter: grayscale(0) blur(59px) saturate(600%);
+	-ms-filter: grayscale(0) blur(59px) saturate(600%);
+	-o-filter: grayscale(0) blur(59px) saturate(600%);
+	filter: grayscale(0) blur(59px) saturate(600%);
+	position: absolute;
+	z-index: 9999;
+	left: 150px;
+	top: 70px;
+	opacity: .4;
+}
+
+.add-bag {
 	background: #22DA5D;
-	border: 2px solid #00A200;
+	border: 2px solid #00A23A;
 	padding: 20px;
 	color: #005E00;
 	position: absolute;
@@ -22,6 +48,14 @@ body {
 	font-size: 16px;
 }
 
-#video{
-	display:none;
+
+.snap-photo {
+	background: #22DA5D;
+	border: 2px solid #00A23A;
+	padding: 20px;
+	color: #005E00;
+	position: absolute;
+	left: 1252px;
+	top: 112px;
+	font-size: 16px;
 }

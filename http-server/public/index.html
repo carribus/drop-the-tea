@@ -1,22 +1,31 @@
+<!DOCTYPE html>
 <html>
+
    <head>
-      <!-- change -->
       <title>Drop the Tea</title>
       <link href="/style.css" rel="stylesheet">
    </head>
-   <body onload="init();">
-      <div id="gameholder">
-      <canvas id="canvas" width="1400" height="900" ></canvas>
-      <button class="addbag" onclick="addBag()">Add Bag</button>
-   </div>
 
-      <video id="video" width="640" height="480" autoplay></video>
-      <button id="snap">Snap Photo</button>
+   <body onload="init();">
+
+      <div id="main">
+      
+         <video id="video" width="1000" height="600" autoplay></video>
+         <canvas id="vidcan" width="640" height="480"></canvas>
+
+         <canvas id="canvas" width="1400" height="900"></canvas>
+
+         <button class="add-bag" onclick="addBag()">Add Bag</button>
+         <button class="snap-photo" id="snap">Snap Photo</button>
+
+      </div>
+
+      <script type="text/javascript" src="/levels.js"></script>
+      <script type="text/javascript" src="/Box2dWeb-2.1.a.3.js"></script>
+      <script type="text/javascript" src="/main.js"></script>
+      <script type="text/javascript" src="/video.js"></script>
+
    </body>
-   <script type="text/javascript" src="/levels.js"></script>
-   <script type="text/javascript" src="/Box2dWeb-2.1.a.3.js"></script>
-   <script type="text/javascript" src="/Box2dWebOverwrite.js"></script>
-   <script type="text/javascript" src="/main.js"></script>
-   <script type="text/javascript" src="/video.js"></script>
-   
+
 </html>
+
