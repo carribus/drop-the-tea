@@ -1,0 +1,11 @@
+{
+  "name": "drop-the-tea",
+  "subdomain": "undefined-drop-the-tea",
+  "scripts": {
+    "start": ""
+  },
+  "version": "0.0.0",
+  "engines": {
+    "node": "0.10.x"
+  }
+}
