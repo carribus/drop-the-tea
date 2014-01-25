@@ -32,7 +32,7 @@ var pegs = [];
 var fixDef = new b2FixtureDef;
 fixDef.density = 1.0;
 fixDef.friction = 0.5;
-fixDef.restitution = 0.2;
+fixDef.restitution = 0.4;
 
 var bodyDef = new b2BodyDef;
 
@@ -102,11 +102,11 @@ function init() {
       // }
 
       function addc(s){
-                   fixDef.shape = new b2CircleShape(
-                        0.3 //radius
-                  );  
+            fixDef.shape = new b2CircleShape(
+                  0.3 //radius
+            );  
 
-                               bodyDef.position.x = s.position.x;
+            bodyDef.position.x = s.position.x;
             bodyDef.position.y = s.position.y;
 
             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
@@ -119,10 +119,10 @@ function init() {
       }
 
       function addb(s){
-                  fixDef.shape = new b2PolygonShape;
-                  fixDef.shape.SetAsBox(s.size.w, s.size.h);
+            fixDef.shape = new b2PolygonShape;
+            fixDef.shape.SetAsBox(s.size.w, s.size.h);
 
-                              bodyDef.position.x = s.position.x;
+            bodyDef.position.x = s.position.x;
             bodyDef.position.y = s.position.y;
 
             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
@@ -135,19 +135,38 @@ function init() {
       }
 
       function addcup(s){
+            for(var i = 0; i < 3; i++){
                   fixDef.shape = new b2PolygonShape;
-                  fixDef.shape.SetAsBox(s.size.w, s.size.h);    
-
+                  switch(i){
+                        case 0:
+                              fixDef.shape.SetAsBox(0.5, 2);   
+                              bodyDef.position.x = s.position.x - s.size.w + 0.5;
+                              bodyDef.position.y = s.position.y - 3;
+                        break;
+                        case 1:
+                              fixDef.shape.SetAsBox(s.size.w, 0.5);   
                               bodyDef.position.x = s.position.x;
-            bodyDef.position.y = s.position.y;
+                              bodyDef.position.y = s.position.y-0.5;                        
+                        break;
+                        case 2:
+                              fixDef.shape.SetAsBox(0.5, 2);   
+                              bodyDef.position.x = s.position.x + s.size.w - 0.5;
+                              bodyDef.position.y = s.position.y - 3;                      
+                        break;
+                  }
+                   
 
-            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
-            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));    
+                  
 
-            s.fixture = map;      
-            if(s.av){
-              s.fixture.m_body.SetAngularVelocity(s.av);    
-            }        
+                  map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+                  map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));    
+
+                  s.fixture = map;      
+                  if(s.av){
+                    s.fixture.m_body.SetAngularVelocity(s.av);    
+                  }                      
+            }
+   
       }
 
       for(var i = 0; i < level.shapes.length; i++){
@@ -162,9 +181,6 @@ function init() {
                         addcup(level.shapes[i]);
                   break;
             }
-
-
-
       }
 
       //create ground
@@ -205,6 +221,15 @@ function init() {
       debugDraw.SetLineThickness(1.0);
       debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
       world.SetDebugDraw(debugDraw);
+
+      window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
 
       window.setInterval(update, 1000 / 60);
 
@@ -248,7 +273,7 @@ function init() {
       //update
       function update() {
             frame++;
-            world.Step(1 / 60, 10, 10);
+            world.Step(1 / 30, 10, 10);
             world.DrawDebugData();
             world.ClearForces();
 
