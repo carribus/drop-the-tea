@@ -1,0 +1,19 @@
+
+body {
+	background-color: #111;
+}
+
+canvas {
+	background-color: #333;
+}
+
+button {
+	background: #32CD32;
+	border: 2px solid #00A200;
+	padding: 20px;
+	color: #005E00;
+	position: absolute;
+	left: 1275px;
+	top: 30px;
+	font-size: 16px;
+}
