@@ -1,5 +1,6 @@
 var DEBUG_FLAGS = {
-    verboseLogging: false
+    verboseLogging: false,
+    motionBlurRender: false
 }
 
 var peg, bag;
@@ -10,7 +11,7 @@ var teaImageObj = new Image();
 teaImageObj.src = './img/teabag.png';
 
 var background = new Image();
-background.src = './gfx/background.png';
+background.src = './img/background.png';
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2AABB = Box2D.Collision.b2AABB,
@@ -375,7 +376,8 @@ function init() {
 
             frame++;
             world.Step(1 / 30, 10, 10);
-            world.DrawDebugDataCustom();
+
+          world.DrawDebugDataCustom();
             world.ClearForces();
 
             for(var i = 0; i < level.shapes.length; i++){
@@ -386,6 +388,13 @@ function init() {
                         
                   }
             }
+
+          if ( DEBUG_FLAGS.motionBlurRender ) {
+              ctx.save();
+              ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+              ctx.fillRect(0, 0, 1400, 900);
+              ctx.restore();
+          }
 
           processObjectsForDeletion();
 
