@@ -12,6 +12,7 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
 	b2CircleShape = Box2D.Collision.Shapes.b2CircleShape,
 	b2DebugDraw = Box2D.Dynamics.b2DebugDraw,
 	b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef;
+    b2ContactListener = Box2D.Dynamics.b2ContactListener;
 
 var world = new b2World(
 	new b2Vec2(0, 10) //gravity
@@ -25,12 +26,26 @@ fixDef.restitution = 0.2;
 
 var bodyDef = new b2BodyDef;
 
+/*
+ * Collision Listener object
+ */
+var contactListener = new b2ContactListener();
+contactListener.BeginContact = function(contact) {
+    console.log('BeginContact');
+    console.log(contact);
+}
+
+contactListener.EndContact = function(contact) {
+    console.log('EndContact');
+    console.log(contact);
+}
+
 function addBag() {
 	//create the bag
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
 	fixDef.shape = new b2CircleShape(0.4);
-	bag.position.x = 8;
+	bag.position.x = 15;
 	bag.position.y = 1;
 	bag = world.CreateBody(bag).CreateFixture(fixDef);
 
@@ -39,11 +54,15 @@ function addBag() {
 	md.bodyB = bag.m_body;
 	md.target.Set(peg.m_body.m_xf.position.x, peg.m_body.m_xf.position.y);
 	md.collideConnected = true;
-	md.maxForce = 200;
+	md.maxForce = 400;
 	bag.m_body.string = world.CreateJoint(md);
 }
 
 function init() {
+
+    // create the world's contact listener
+    world.SetContactListener(contactListener);
+
             //create ground
             bodyDef.type = b2Body.b2_staticBody;
             //Top bottom limits
