@@ -277,7 +277,8 @@ function init() {
           };
 })();
 
-      window.setInterval(update, 1000 / 60);
+      //window.setInterval(update, 1000 / 60);
+    window.requestAnimFrame(update);
 
       //mouse
 
@@ -318,6 +319,8 @@ function init() {
 
       //update
       function update() {
+          window.requestAnimFrame(update);
+
             frame++;
             world.Step(1 / 30, 10, 10);
             world.DrawDebugData();
