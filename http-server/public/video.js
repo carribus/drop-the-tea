@@ -34,10 +34,6 @@ window.addEventListener("DOMContentLoaded", function() {
       }, errBack);
    }
 
-document.getElementById("snap").addEventListener("click", function() {
-   document.body.appendChild(takephoto())
-});
-
 }, false);
 
 function next(a, b, id){

@@ -3,7 +3,8 @@ var DEBUG_FLAGS = {
     motionBlurRender: {
         enabled: false,
         intensity: 0.2
-    }
+    },
+    drawFrameCount: false
 }
 
 var peg, bag;
@@ -96,6 +97,7 @@ contactListener.EndContact = function(contact) {
     }
 }
 
+
 function addBag() {
 
 	//create the bag
@@ -115,13 +117,6 @@ function addBag() {
 	md.collideConnected = true;
 	md.maxForce = 400;
 	bag.m_body.string = world.CreateJoint(md);
-
-//    contactListener.on(bag.m_body, onBagCollision);
-
-}
-
-function onBagCollision() {
-    console.log('Your bag touched something icky...');
 }
 
 function init() {
@@ -222,11 +217,7 @@ function init() {
                         break;
                   }
                    
-
-                  
-
-
-                  s.fixture = map;      
+                  s.fixture = map;
                   if(s.av){
                     s.fixture.m_body.SetAngularVelocity(s.av);    
                   }                      
@@ -397,6 +388,11 @@ function init() {
                         
                   }
             }
+
+          if ( DEBUG_FLAGS.drawFrameCount ) {
+              ctx.fillStyle = 'white';
+              ctx.fillText(''+frame, 10, 10);
+          }
 
           if ( DEBUG_FLAGS.motionBlurRender.enabled ) {
               ctx.save();
