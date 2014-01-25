@@ -7,7 +7,7 @@ Box2D.Dynamics.b2World.prototype.DrawDebugDataCustom = function(){
 		return;
 	}
 
-    if ( !DEBUG_FLAGS.motionBlurRender )
+    if ( !DEBUG_FLAGS.motionBlurRender.enabled )
     	this.m_debugDraw.m_sprite.graphics.clear();
 
 	var flags = this.m_debugDraw.GetFlags();
