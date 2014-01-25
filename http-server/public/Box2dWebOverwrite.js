@@ -171,11 +171,11 @@ Box2D.Dynamics.b2DebugDraw.prototype.DrawImage = function (center, radius, axis,
 		cy = center.y * drawScale;
 
 				s.save();
-				s.translate(cx,cy);
-				s.rotate(rotation + 90);
+				s.translate(cx + (teaImageObj.width / 2),cy + (teaImageObj.height / 2));
+				s.rotate(rotation - 30);
 								
 
-	this.m_ctx.drawImage(teaImageObj,0,0);
+	this.m_ctx.drawImage(teaImageObj,-(teaImageObj.width / 2),-(teaImageObj.height / 2));
 
 	s.restore();
 };
