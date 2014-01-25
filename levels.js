@@ -13,11 +13,10 @@ var levels = [{
             size: {w: 5, h:1}
       },
       {
-            type: 'b', // cup
-            velocity: {x: 0, y: 0},
-            flip: 120,
-            position: {x: 26, y: 25.8},
-            size: {w: 4, h:4},
-            av: 10
+      		type: 'cup',
+      		velocity: {x: 0, y: 0},
+            flip: 0,
+            position: {x: 20, y: 29},
+            size: {w: 5, h:2}
       }]
 }];

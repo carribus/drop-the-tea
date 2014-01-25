@@ -32,19 +32,50 @@ var pegs = [];
 var fixDef = new b2FixtureDef;
 fixDef.density = 1.0;
 fixDef.friction = 0.5;
-fixDef.restitution = 0.2;
+fixDef.restitution = 0.4;
 
 var bodyDef = new b2BodyDef;
 
 /*
  * Collision Listener object
  */
-var contactListener = new b2ContactListener();
+function ContactListener() {
+    this.listeners = [];
+};
+ContactListener.prototype = Object.create(b2ContactListener.prototype);
+ContactListener.prototype.constructor = ContactListener;
+
+ContactListener.prototype.on = function(body, listener) {
+    this.listeners.push({"body": body, "once": false, "listener": listener});
+}
+
+ContactListener.prototype.once = function(body, listener) {
+    this.listeners.push({"body": body, "once": true, "listener": listener});
+}
+
+ContactListener.prototype.notify = function(body, otherBody) {
+    var listener;
+    for ( var i = 0, len = this.listeners.length; i < len; i++ ) {
+        if ( body == this.listeners[i].body || otherBody == this.listeners[i].body ) {
+            listener = this.listeners[i].listener;
+            // remove the listener if its a 'once-off'
+            if ( this.listeners[i].once ) {
+                this.listeners.splice(i--);
+            }
+            listener(this.listeners[i].body);
+        }
+    }
+}
+
+var contactListener = new ContactListener();
+
 contactListener.BeginContact = function(contact) {
     if ( DEBUG_FLAGS.verboseLogging ) {
         console.log('BeginContact');
         console.log(contact);
     }
+
+    this.notify(contact.m_fixtureA.m_body, contact.m_fixtureB.m_body);
 }
 
 contactListener.EndContact = function(contact) {
@@ -71,6 +102,13 @@ function addBag() {
 	md.collideConnected = true;
 	md.maxForce = 400;
 	bag.m_body.string = world.CreateJoint(md);
+
+//    contactListener.on(bag.m_body, onBagCollision);
+
+}
+
+function onBagCollision() {
+    console.log('Your bag touched something icky...');
 }
 
 function init() {
@@ -101,31 +139,93 @@ function init() {
       //       }
       // }
 
+      function addc(s){
+            fixDef.shape = new b2CircleShape(
+                  0.3 //radius
+            );  
+
+            bodyDef.position.x = s.position.x;
+            bodyDef.position.y = s.position.y;
+
+            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));    
+
+            s.fixture = map;      
+            if(s.av){
+              s.fixture.m_body.SetAngularVelocity(s.av);
+            }
+      }
+
+      function addb(s){
+            fixDef.shape = new b2PolygonShape;
+            fixDef.shape.SetAsBox(s.size.w, s.size.h);
+
+            bodyDef.position.x = s.position.x;
+            bodyDef.position.y = s.position.y;
+
+            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));    
+
+            s.fixture = map;      
+            if(s.av){
+              s.fixture.m_body.SetAngularVelocity(s.av);    
+            }
+      }
+
+      function addcup(s){
+            for(var i = 0; i < 3; i++){
+                  fixDef.shape = new b2PolygonShape;
+                  switch(i){
+                        case 0:
+                              fixDef.shape.SetAsBox(0.5, 2);   
+                              bodyDef.position.x = s.position.x - s.size.w + 0.5;
+                              bodyDef.position.y = s.position.y - 3;
+                            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+                            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
+                        break;
+                        case 1:
+                              fixDef.shape.SetAsBox(s.size.w, 0.5);   
+                              bodyDef.position.x = s.position.x;
+                              bodyDef.position.y = s.position.y-0.5;
+                            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+                            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
+                            contactListener.on(map.m_body, function(body) {
+                                console.info('Cup cup cup. FUck you cup');
+                            })
+                        break;
+                        case 2:
+                              fixDef.shape.SetAsBox(0.5, 2);   
+                              bodyDef.position.x = s.position.x + s.size.w - 0.5;
+                              bodyDef.position.y = s.position.y - 3;
+                            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+                            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
+                        break;
+                  }
+                   
+
+                  
+
+
+                  s.fixture = map;      
+                  if(s.av){
+                    s.fixture.m_body.SetAngularVelocity(s.av);    
+                  }                      
+            }
+   
+      }
+
       for(var i = 0; i < level.shapes.length; i++){
             switch(level.shapes[i].type){
                   case 'c':
-                   fixDef.shape = new b2CircleShape(
-                        0.3 //radius
-                  );          
+                        addc(level.shapes[i]);
                   break;
                   case 'b':
-                  fixDef.shape = new b2PolygonShape
-                  fixDef.shape.SetAsBox(level.shapes[i].size.w, level.shapes[i].size.h);
+                        addb(level.shapes[i]);
+                  break;
+                  case 'cup':
+                        addcup(level.shapes[i]);
                   break;
             }
-
-            bodyDef.position.x = level.shapes[i].position.x;
-            bodyDef.position.y = level.shapes[i].position.y;
-
-            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-            map.m_body.SetLinearVelocity (new b2Vec2(level.shapes[i].velocity.x, level.shapes[i].velocity.y));    
-
-            level.shapes[i].fixture = map;      
-            if(level.shapes[i].av){
-              level.shapes[i].fixture.m_body.SetAngularVelocity(level.shapes[i].av);    
-            }
-
       }
 
       //create ground
@@ -166,6 +266,15 @@ function init() {
       debugDraw.SetLineThickness(1.0);
       debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
       world.SetDebugDraw(debugDraw);
+
+      window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
 
       window.setInterval(update, 1000 / 60);
 
@@ -209,7 +318,7 @@ function init() {
       //update
       function update() {
             frame++;
-            world.Step(1 / 60, 10, 10);
+            world.Step(1 / 30, 10, 10);
             world.DrawDebugData();
             world.ClearForces();
 
