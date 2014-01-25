@@ -10,7 +10,7 @@ canvas {
     height: 900px; 
 }
 
-button {
+.addbag {
 	background: #22DA5D;
 	border: 2px solid #00A23A;
 	padding: 20px;
