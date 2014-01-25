@@ -41,14 +41,14 @@ var bodyDef = new b2BodyDef;
  */
 var contactListener = new b2ContactListener();
 contactListener.BeginContact = function(contact) {
-    if ( DEBUG_MODE.verboseLogging ) {
+    if ( DEBUG_FLAGS.verboseLogging ) {
         console.log('BeginContact');
         console.log(contact);
     }
 }
 
 contactListener.EndContact = function(contact) {
-    if ( DEBUG_MODE.verboseLogging ) {
+    if ( DEBUG_FLAGS.verboseLogging ) {
         console.log('EndContact');
         console.log(contact);
     }
