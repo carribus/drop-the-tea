@@ -1,3 +1,7 @@
+var DEBUG_FLAGS = {
+    verboseLogging: false
+}
+
 var peg, bag;
 
 var level = levels[0]
@@ -37,13 +41,17 @@ var bodyDef = new b2BodyDef;
  */
 var contactListener = new b2ContactListener();
 contactListener.BeginContact = function(contact) {
-    console.log('BeginContact');
-    console.log(contact);
+    if ( DEBUG_MODE.verboseLogging ) {
+        console.log('BeginContact');
+        console.log(contact);
+    }
 }
 
 contactListener.EndContact = function(contact) {
-    console.log('EndContact');
-    console.log(contact);
+    if ( DEBUG_MODE.verboseLogging ) {
+        console.log('EndContact');
+        console.log(contact);
+    }
 }
 
 function addBag() {
