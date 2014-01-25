@@ -5,11 +5,14 @@ body {
 
 canvas {
 	background-color: #333;
+    margin: 0px auto;
+    width:1400px; 
+    height: 900px; 
 }
 
 .addbag {
 	background: #22DA5D;
-	border: 2px solid #00A200;
+	border: 2px solid #00A23A;
 	padding: 20px;
 	color: #005E00;
 	position: absolute;
