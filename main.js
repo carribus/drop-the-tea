@@ -10,6 +10,9 @@ teaImageObj.src = './gfx/teabag.png';
 teaImageObj.height = 65.5;
 teaImageObj.width = 56;
 
+var background = new Image();
+background.src = './gfx/background.png';
+
 var level = levels[0]
 
 
@@ -366,9 +369,10 @@ function init() {
       }
 
       //update
-      function update() {
+      function update(dt) {
           window.requestAnimFrame(update);
 
+          ctx.drawImage(background, 0, 0);
             frame++;
             world.Step(1 / 60, 10, 10);
             world.DrawDebugDataCustom();
