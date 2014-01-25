@@ -5,10 +5,15 @@
    </head>
    <body onload="init();">
       <canvas id="canvas" width="1400" height="900" ></canvas>
-      <button onclick="addBag()">Add Bag</button>
+      <button class="addbag" onclick="addBag()">Add Bag</button>
+
+      <video id="video" width="640" height="480" autoplay></video>
+<button id="snap">Snap Photo</button>
+<canvas id="vidcan" width="640" height="480"></canvas>
    </body>
    <script type="text/javascript" src="levels.js"></script>
    <script type="text/javascript" src="Box2dWeb-2.1.a.3.js"></script>
    <script type="text/javascript" src="main.js"></script>
+   <script type="text/javascript" src="video.js"></script>
    
 </html>
