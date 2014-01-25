@@ -59,7 +59,7 @@ function addBag() {
 	//create the bag
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
-	fixDef.shape = new b2CircleShape(0.4);
+	fixDef.shape = new b2CircleShape(1);
 	bag.position.x = 15;
 	bag.position.y = 1;
 	bag = world.CreateBody(bag).CreateFixture(fixDef);
@@ -116,11 +116,15 @@ function init() {
 
             bodyDef.position.x = level.shapes[i].position.x;
             bodyDef.position.y = level.shapes[i].position.y;
+
             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
 
             map.m_body.SetLinearVelocity (new b2Vec2(level.shapes[i].velocity.x, level.shapes[i].velocity.y));    
 
             level.shapes[i].fixture = map;      
+            if(level.shapes[i].av){
+              level.shapes[i].fixture.m_body.SetAngularVelocity(level.shapes[i].av);    
+            }
 
       }
 
@@ -214,7 +218,7 @@ function init() {
                   if(frame % level.shapes[i].flip === 0){
                         velocity = level.shapes[i].fixture.m_body.GetLinearVelocity();
                         level.shapes[i].fixture.m_body.SetLinearVelocity(new b2Vec2(-velocity.x, velocity.y));
-                        level.shapes[i].fixture.m_body.SetAngularVelocity(10.0);
+                        
                   }
             }
       };
