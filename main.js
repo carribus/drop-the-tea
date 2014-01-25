@@ -233,7 +233,7 @@ function init() {
           map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y), s.r);
 
           map.m_body.m_userData = {collectible: true};
-          contactListener.once(map.m_body, onCollectibleTouched);
+          contactListener.on(map.m_body, onCollectibleTouched);
 
           s.fixture = map;
           if(s.av){
