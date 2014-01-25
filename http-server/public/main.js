@@ -178,26 +178,26 @@ function init() {
                   fixDef.shape = new b2PolygonShape;
                   switch(i){
                         case 0:
-                              fixDef.shape.SetAsBox(0.5, 2);   
-                              bodyDef.position.x = s.position.x - s.size.w + 0.5;
-                              bodyDef.position.y = s.position.y - 3;
+                            fixDef.shape.SetAsBox(0.1, 4);    
+                            bodyDef.position.x = s.position.x - s.size.w + -.11;
+                            bodyDef.position.y = s.position.y - 3.2;
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                         break;
                         case 1:
-                              fixDef.shape.SetAsBox(s.size.w, 0.5);   
-                              bodyDef.position.x = s.position.x;
-                              bodyDef.position.y = s.position.y-0.5;
+                            fixDef.shape.SetAsBox(s.size.w - 1.78, 2);   
+                            bodyDef.position.x = s.position.x - 1.78;
+                            bodyDef.position.y = s.position.y - 1.2;
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                             contactListener.on(map.m_body, function(body) {
-                                console.info('Cup cup cup. FUck you cup');
+                            console.info('Cup cup cup. FUck you cup');
                             })
                         break;
                         case 2:
-                              fixDef.shape.SetAsBox(0.5, 2);   
-                              bodyDef.position.x = s.position.x + s.size.w - 0.5;
-                              bodyDef.position.y = s.position.y - 3;
+                            fixDef.shape.SetAsBox(0.1, 4);   
+                            bodyDef.position.x = s.position.x + s.size.w - 3.46;
+                            bodyDef.position.y = s.position.y - 3.2;
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                         break;
