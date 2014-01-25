@@ -17,7 +17,7 @@ var levels = [{
             velocity: {x: 0, y: 0},
             flip: 120,
             position: {x: 26, y: 25.8},
-            size: {w: 4, h:4},
+            size: {w: 4, h:4}
             size: {w: 1, h:1},
             av: 10
       }]
