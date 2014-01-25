@@ -9,6 +9,9 @@ var level = levels[0]
 var teaImageObj = new Image();
 teaImageObj.src = './img/teabag.png';
 
+var background = new Image();
+background.src = './gfx/background.png';
+
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2AABB = Box2D.Collision.b2AABB,
       b2BodyDef = Box2D.Dynamics.b2BodyDef,
@@ -31,6 +34,7 @@ var world = new b2World(
 );
 var frame = 0;
 var pegs = [];
+var objectsToBeDeleted = [];
 
 var fixDef = new b2FixtureDef;
 fixDef.density = 1.0;
@@ -220,6 +224,46 @@ function init() {
    
       }
 
+    function addCollectible(s) {
+        fixDef.shape = new b2PolygonShape;
+        fixDef.shape.SetAsOrientedBox(s.size.w, s.size.h,
+            new b2Vec2(s.origin.x,s.origin.y), s.r);
+        fixDef.isSensor = true;
+
+        bodyDef.position.x = s.position.x;
+        bodyDef.position.y = s.position.y;
+
+        map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+        map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y), s.r);
+
+        map.m_body.m_userData = {collectible: true};
+        contactListener.on(map.m_body, onCollectibleTouched);
+
+        s.fixture = map;
+        if(s.av){
+            s.fixture.m_body.SetAngularVelocity(s.av);
+        }
+        fixDef.isSensor = false;
+
+    }
+
+    function onCollectibleTouched(bodyA, bodyB) {
+        console.log('collectible touched');
+        var cObj = bodyA.m_userData.collectible ? bodyA : bodyB;
+        flagForDeletion(cObj);
+    }
+
+    function flagForDeletion(obj) {
+        objectsToBeDeleted.push(obj);
+    }
+
+    function processObjectsForDeletion() {
+        for ( var i = objectsToBeDeleted.length-1; i >= 0; i-- ) {
+            world.DestroyBody(objectsToBeDeleted[i]);
+        }
+        objectsToBeDeleted = [];
+    }
+
       for(var i = 0; i < level.shapes.length; i++){
             switch(level.shapes[i].type){
                   case 'c':
@@ -231,6 +275,9 @@ function init() {
                   case 'cup':
                         addcup(level.shapes[i]);
                   break;
+                case 'collectible':
+                    addCollectible(level.shapes[i]);
+                    break;
             }
       }
 
@@ -339,6 +386,9 @@ function init() {
                         
                   }
             }
+
+          processObjectsForDeletion();
+
       };
 
       //helpers
