@@ -10,7 +10,9 @@ var levels = [{
             velocity: {x: 0, y: 0},
             flip: 100,
             position: {x: 12, y: 12},
-            size: {w: 5, h:1}
+            size: {w: 5, h:1},
+            r: 10,
+            origin: {x: 2.5, y: 0.5}
       },
       {
       		type: 'cup',

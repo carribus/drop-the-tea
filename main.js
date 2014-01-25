@@ -120,13 +120,14 @@ function init() {
 
       function addb(s){
             fixDef.shape = new b2PolygonShape;
-            fixDef.shape.SetAsBox(s.size.w, s.size.h);
+            fixDef.shape.SetAsOrientedBox(s.size.w, s.size.h, 
+                  new b2Vec2(s.origin.x,s.origin.y), s.r);
 
             bodyDef.position.x = s.position.x;
             bodyDef.position.y = s.position.y;
 
             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
-            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));    
+            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y), s.r);    
 
             s.fixture = map;      
             if(s.av){
