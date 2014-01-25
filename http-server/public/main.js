@@ -1,6 +1,9 @@
 var DEBUG_FLAGS = {
     verboseLogging: false,
-    motionBlurRender: false
+    motionBlurRender: {
+        enabled: true,
+        intensity: 0.2
+    }
 }
 
 var peg, bag;
@@ -389,9 +392,9 @@ function init() {
                   }
             }
 
-          if ( DEBUG_FLAGS.motionBlurRender ) {
+          if ( DEBUG_FLAGS.motionBlurRender.enabled ) {
               ctx.save();
-              ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+              ctx.fillStyle = 'rgba(0, 0, 0, ' + DEBUG_FLAGS.motionBlurRender.intensity + ')';
               ctx.fillRect(0, 0, 1400, 900);
               ctx.restore();
           }
