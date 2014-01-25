@@ -93,11 +93,12 @@ function addBag() {
 	//create the bag
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
-	fixDef.shape = new b2CircleShape(0.101);
-	fixDef.shape = new b2CircleShape(0.101);
+	fixDef.shape = new b2CircleShape(0.7);
+  fixDef.type = 'bag';
 	bag.position.x = 15;
 	bag.position.y = 1;
 	bag = world.CreateBody(bag).CreateFixture(fixDef);
+  bag.m_body.type = 'bag';
 
 	var md = new b2MouseJointDef();
 	md.bodyA = peg.m_body;

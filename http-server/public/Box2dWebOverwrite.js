@@ -31,23 +31,23 @@ Box2D.Dynamics.b2World.prototype.DrawDebugDataCustom = function(){
 				s = f.GetShape();
 				if (b.IsActive() == false) {
 					color.Set(0.5, 0.5, 0.3);
-					this.DrawShape(s, xf, color);
+					this.DrawShape(s, xf, color, b);
 				}
 				else if (b.GetType() == b2Body.b2_staticBody) {
 					color.Set(0.5, 0.9, 0.5);
-					this.DrawShape(s, xf, color);
+					this.DrawShape(s, xf, color, b);
 				}
 				else if (b.GetType() == b2Body.b2_kinematicBody) {
 					color.Set(0.5, 0.5, 0.9);
-					this.DrawShape(s, xf, color);
+					this.DrawShape(s, xf, color, b);
 				}
 				else if (b.IsAwake() == false) {
 					color.Set(0.6, 0.6, 0.6);
-					this.DrawShape(s, xf, color);
+					this.DrawShape(s, xf, color, b);
 				}
 				else {
 					color.Set(0.9, 0.7, 0.7);
-					this.DrawShape(s, xf, color);
+					this.DrawShape(s, xf, color, b);
 				}
 			}
 		}
@@ -103,7 +103,7 @@ Box2D.Dynamics.b2World.prototype.DrawDebugDataCustom = function(){
 	}
 }
 
-Box2D.Dynamics.b2World.prototype.DrawShapeCustom = function (shape, xf, color) {
+Box2D.Dynamics.b2World.prototype.DrawShapeCustom = function (shape, xf, color, body) {
 
 	b2Shape = Box2D.Collision.Shapes.b2Shape;
 	b2Math = Box2D.Common.Math.b2Math;
@@ -117,9 +117,12 @@ Box2D.Dynamics.b2World.prototype.DrawShapeCustom = function (shape, xf, color) {
 			var radius = circle.m_radius;
 			var axis = xf.R.col1;
 
-			if(shape.m_radius === 0.101){
-
+			if(body.type == 'bag'){
+				//this.m_debugDraw.DrawSolidCircle(center, radius, axis, color);
+				center.x -= 0.7;
+				center.y -= 0.7;
 				this.m_debugDraw.DrawImage(center, radius, axis, color);
+				
 			}else{
 
 
