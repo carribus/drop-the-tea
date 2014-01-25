@@ -1,5 +1,14 @@
 var peg, bag;
 
+var level = {
+      shapes: [{
+            type: 'c',
+            velocity: {x: 10, y: 0},
+            flip: 100,
+            position: {x: 10, y: 10}
+      }]
+}
+
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2AABB = Box2D.Collision.b2AABB,
       b2BodyDef = Box2D.Dynamics.b2BodyDef,
@@ -70,24 +79,43 @@ function init() {
 
       bodyDef.type = b2Body.b2_kinematicBody;
       fixDef.shape = new b2CircleShape(0.4);
-      for (var i = 1; i < 10; ++i) {
-            for (var j = 0; j < 3; j++) {
-                  fixDef.shape = new b2CircleShape(
+      // for (var i = 1; i < 10; ++i) {
+      //       for (var j = 0; j < 3; j++) {
+      //             fixDef.shape = new b2CircleShape(
+      //                   0.3 //radius
+      //             );
+
+      //             bodyDef.position.x = i * 4.2;
+      //             bodyDef.position.y = (j % 40)* 3 + 10;
+      //             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+      //             if(j% 2){
+      //                   map.m_body.SetLinearVelocity (new b2Vec2(2, 0));    
+      //             }else{
+      //                   map.m_body.SetLinearVelocity (new b2Vec2(-2, 0)); 
+      //             }
+
+      //             pegs.push(map);
+      //       }
+      // }
+
+      for(var i = 0; i < level.shapes.length; i++){
+            switch(level.shapes[i]){
+                  case 'c':
+                   fixDef.shape = new b2CircleShape(
                         0.3 //radius
-                  );
-
-                  bodyDef.position.x = i * 4.2;
-                  bodyDef.position.y = (j % 40)* 3 + 10;
-                  map = world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-                  if(j% 2){
-                        map.m_body.SetLinearVelocity (new b2Vec2(2, 0));    
-                  }else{
-                        map.m_body.SetLinearVelocity (new b2Vec2(-2, 0)); 
-                  }
-
-                  pegs.push(map);
+                  );          
+                  break;
             }
+
+            bodyDef.position.x = level.shapes[i].position.x;
+            bodyDef.position.y = level.shapes[i].position.y;
+            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+            map.m_body.SetLinearVelocity (new b2Vec2(level.shapes[i].velocity.x, level.shapes[i].velocity.y));    
+
+            level.shapes[i].fixture = map;      
+
       }
 
       //create ground
@@ -117,9 +145,6 @@ function init() {
 
       //create the bag attached to the peg
 
-
-      //create some objects
-      addTeaCup()
 
 
       //setup debug draw
@@ -177,11 +202,11 @@ function init() {
             world.DrawDebugData();
             world.ClearForces();
 
-            if(frame % 50 === 0){
-                  var velocity;
-                  for(var i = 0; i < pegs.length; i++){
-                        velocity = pegs[i].m_body.GetLinearVelocity();
-                        pegs[i].m_body.SetLinearVelocity(new b2Vec2(-velocity.x, velocity.y));
+            for(var i = 0; i < level.shapes.length; i++){
+                  if(!level.shapes[i].flip) continue;
+                  if(frame % level.shapes[i].flip === 0){
+                        velocity = level.shapes[i].fixture.m_body.GetLinearVelocity();
+                        level.shapes[i].fixture.m_body.SetLinearVelocity(new b2Vec2(-velocity.x, velocity.y));                       
                   }
             }
       };
