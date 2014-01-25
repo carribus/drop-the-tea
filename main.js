@@ -16,6 +16,7 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef,
       b2ContactListener = Box2D.Dynamics.b2ContactListener;
 
+var ctx;
 
 var world = new b2World(
       new b2Vec2(0, 10) //gravity
@@ -145,8 +146,9 @@ function init() {
 
 
       //setup debug draw
+      ctx = document.getElementById('canvas').getContext('2d');
       var debugDraw = new b2DebugDraw();
-      debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+      debugDraw.SetSprite(ctx);
       debugDraw.SetDrawScale(30.0);
       debugDraw.SetFillAlpha(0.5);
       debugDraw.SetLineThickness(1.0);
@@ -203,7 +205,8 @@ function init() {
                   if(!level.shapes[i].flip) continue;
                   if(frame % level.shapes[i].flip === 0){
                         velocity = level.shapes[i].fixture.m_body.GetLinearVelocity();
-                        level.shapes[i].fixture.m_body.SetLinearVelocity(new b2Vec2(-velocity.x, velocity.y));                       
+                        level.shapes[i].fixture.m_body.SetLinearVelocity(new b2Vec2(-velocity.x, velocity.y));
+                        level.shapes[i].fixture.m_body.SetAngularVelocity(10.0);
                   }
             }
       };
