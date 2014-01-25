@@ -1,3 +1,12 @@
+function takephoto(){
+   var canvas = document.createElement('canvas');
+   canvas.width = 640;
+   canvas.height = 480;
+   context = canvas.getContext("2d");
+   context.drawImage(video, 0, 0, 640, 480);
+   return canvas;
+}
+
 window.addEventListener("DOMContentLoaded", function() {
    // Grab elements, create settings, etc.
    var video = document.getElementById("video"),
@@ -26,12 +35,7 @@ window.addEventListener("DOMContentLoaded", function() {
    }
 
 document.getElementById("snap").addEventListener("click", function() {
-   var canvas = document.createElement('canvas');
-   canvas.width = 640;
-   canvas.height = 480;
-   context = canvas.getContext("2d");
-   context.drawImage(video, 0, 0, 640, 480);
-   document.body.appendChild(canvas);
+   document.body.appendChild(takephoto())
 });
 
 }, false);

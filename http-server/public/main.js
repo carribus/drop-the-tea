@@ -6,6 +6,9 @@ var peg, bag;
 
 var level = levels[0]
 
+var teaImageObj = new Image();
+teaImageObj.src = './img/teabag.png';
+
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2AABB = Box2D.Collision.b2AABB,
       b2BodyDef = Box2D.Dynamics.b2BodyDef,
@@ -90,7 +93,8 @@ function addBag() {
 	//create the bag
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
-	fixDef.shape = new b2CircleShape(1);
+	fixDef.shape = new b2CircleShape(0.101);
+	fixDef.shape = new b2CircleShape(0.101);
 	bag.position.x = 15;
 	bag.position.y = 1;
 	bag = world.CreateBody(bag).CreateFixture(fixDef);
@@ -323,7 +327,7 @@ function init() {
 
             frame++;
             world.Step(1 / 30, 10, 10);
-            world.DrawDebugData();
+            world.DrawDebugDataCustom();
             world.ClearForces();
 
             for(var i = 0; i < level.shapes.length; i++){
