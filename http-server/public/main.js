@@ -1,9 +1,10 @@
 var DEBUG_FLAGS = {
     verboseLogging: false,
     motionBlurRender: {
-        enabled: true,
+        enabled: false,
         intensity: 0.2
-    }
+    },
+    drawFrameCount: false
 }
 
 var peg, bag;
@@ -115,13 +116,6 @@ function addBag() {
 	md.collideConnected = true;
 	md.maxForce = 400;
 	bag.m_body.string = world.CreateJoint(md);
-
-//    contactListener.on(bag.m_body, onBagCollision);
-
-}
-
-function onBagCollision() {
-    console.log('Your bag touched something icky...');
 }
 
 function init() {
@@ -204,7 +198,8 @@ function init() {
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                             contactListener.on(map.m_body, function(body) {
-                            console.info('Cup cup cup. FUck you cup');
+
+                                console.info('Cup cup cup. FUck you cup');
                             })
                         break;
                         case 2:
@@ -216,11 +211,7 @@ function init() {
                         break;
                   }
                    
-
-                  
-
-
-                  s.fixture = map;      
+                  s.fixture = map;
                   if(s.av){
                     s.fixture.m_body.SetAngularVelocity(s.av);    
                   }                      
@@ -391,6 +382,11 @@ function init() {
                         
                   }
             }
+
+          if ( DEBUG_FLAGS.drawFrameCount ) {
+              ctx.fillStyle = 'white';
+              ctx.fillText(''+frame, 10, 10);
+          }
 
           if ( DEBUG_FLAGS.motionBlurRender.enabled ) {
               ctx.save();
