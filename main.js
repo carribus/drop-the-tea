@@ -101,30 +101,69 @@ function init() {
       //       }
       // }
 
+      function addc(s){
+                   fixDef.shape = new b2CircleShape(
+                        0.3 //radius
+                  );  
+
+                               bodyDef.position.x = s.position.x;
+            bodyDef.position.y = s.position.y;
+
+            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));    
+
+            s.fixture = map;      
+            if(s.av){
+              s.fixture.m_body.SetAngularVelocity(s.av);    
+            }
+      }
+
+      function addb(s){
+                  fixDef.shape = new b2PolygonShape;
+                  fixDef.shape.SetAsBox(s.size.w, s.size.h);
+
+                              bodyDef.position.x = s.position.x;
+            bodyDef.position.y = s.position.y;
+
+            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));    
+
+            s.fixture = map;      
+            if(s.av){
+              s.fixture.m_body.SetAngularVelocity(s.av);    
+            }
+      }
+
+      function addcup(s){
+                  fixDef.shape = new b2PolygonShape;
+                  fixDef.shape.SetAsBox(s.size.w, s.size.h);    
+
+                              bodyDef.position.x = s.position.x;
+            bodyDef.position.y = s.position.y;
+
+            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));    
+
+            s.fixture = map;      
+            if(s.av){
+              s.fixture.m_body.SetAngularVelocity(s.av);    
+            }        
+      }
+
       for(var i = 0; i < level.shapes.length; i++){
             switch(level.shapes[i].type){
                   case 'c':
-                   fixDef.shape = new b2CircleShape(
-                        0.3 //radius
-                  );          
+                        addc(level.shapes[i]);
                   break;
                   case 'b':
-                  fixDef.shape = new b2PolygonShape
-                  fixDef.shape.SetAsBox(level.shapes[i].size.w, level.shapes[i].size.h);
+                        addb(level.shapes[i]);
+                  break;
+                  case 'cup':
+                        addcup(level.shapes[i]);
                   break;
             }
 
-            bodyDef.position.x = level.shapes[i].position.x;
-            bodyDef.position.y = level.shapes[i].position.y;
 
-            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-            map.m_body.SetLinearVelocity (new b2Vec2(level.shapes[i].velocity.x, level.shapes[i].velocity.y));    
-
-            level.shapes[i].fixture = map;      
-            if(level.shapes[i].av){
-              level.shapes[i].fixture.m_body.SetAngularVelocity(level.shapes[i].av);    
-            }
 
       }
 
