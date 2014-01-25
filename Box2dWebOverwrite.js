@@ -164,7 +164,7 @@ Box2D.Dynamics.b2DebugDraw.prototype.DrawImage = function (center, radius, axis,
 		cx = center.x * drawScale,
 		cy = center.y * drawScale;
 
-	context.translate(cx, cy);
+
 
 	this.m_ctx.drawImage(teaImageObj,cx,cy);
 };

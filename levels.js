@@ -67,7 +67,33 @@ var levels = [
                         size: {w: .17, h: 4},
                         r: 0,
                         origin: {x: 0, y: 0}
-                  }
-            ]
+                  },
+                {
+                    type: 'collectible',
+                    velocity: {x: 0, y: 0},
+                    flip: 0,
+                    position: {x: 22, y: 13},
+                    r: 45,
+                    size: {w: 0.5, h: 0.5},
+                    origin: {x: .25, h: .25}
+                },
+                {
+                    type: 'collectible',
+                    velocity: {x: 0, y: 0},
+                    flip: 0,
+                    position: {x: 24, y: 13},
+                    r: 45,
+                    size: {w: 0.5, h: 0.5},
+                    origin: {x: .25, h: .25}
+                },
+                {
+                    type: 'collectible',
+                    velocity: {x: 0, y: 0},
+                    flip: 0,
+                    position: {x: 20, y: 13},
+                    r: 45,
+                    size: {w: 0.5, h: 0.5},
+                    origin: {x: .25, h: .25}
+                }            ]
       }
 ];
