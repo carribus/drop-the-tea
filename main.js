@@ -1,13 +1,6 @@
 var peg, bag;
 
-var level = {
-      shapes: [{
-            type: 'c',
-            velocity: {x: 10, y: 0},
-            flip: 100,
-            position: {x: 10, y: 10}
-      }]
-}
+var level = levels[0]
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2AABB = Box2D.Collision.b2AABB,
@@ -100,11 +93,15 @@ function init() {
       // }
 
       for(var i = 0; i < level.shapes.length; i++){
-            switch(level.shapes[i]){
+            switch(level.shapes[i].type){
                   case 'c':
                    fixDef.shape = new b2CircleShape(
                         0.3 //radius
                   );          
+                  break;
+                  case 'b':
+                  fixDef.shape = new b2PolygonShape
+                  fixDef.shape.SetAsBox(level.shapes[i].size.w, level.shapes[i].size.h);
                   break;
             }
 
