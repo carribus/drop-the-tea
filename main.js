@@ -1,5 +1,10 @@
 var peg, bag;
 
+var teaImageObj = new Image();
+teaImageObj.src = './gfx/teabag.png';
+teaImageObj.height = 65.5;
+teaImageObj.width = 56;
+
 var level = {
       shapes: [{
             type: 'c',
@@ -28,6 +33,7 @@ var world = new b2World(
       new b2Vec2(0, 10) //gravity
       , true //allow sleep
 );
+
 var frame = 0;
 var pegs = [];
 
@@ -57,7 +63,7 @@ function addBag() {
 	//create the bag
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
-	fixDef.shape = new b2CircleShape(0.4);
+	fixDef.shape = new b2CircleShape(0.601);
 	bag.position.x = 15;
 	bag.position.y = 1;
 	bag = world.CreateBody(bag).CreateFixture(fixDef);
@@ -72,7 +78,7 @@ function addBag() {
 }
 
 function init() {
-      var map;
+    var map;
 
       // create the world's contact listener
       world.SetContactListener(contactListener);
@@ -199,7 +205,7 @@ function init() {
       function update() {
             frame++;
             world.Step(1 / 60, 10, 10);
-            world.DrawDebugData();
+            world.DrawDebugDataCustom();
             world.ClearForces();
 
             for(var i = 0; i < level.shapes.length; i++){
