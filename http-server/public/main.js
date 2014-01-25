@@ -97,6 +97,7 @@ contactListener.EndContact = function(contact) {
     }
 }
 
+/*
 function addBag() {
 
 	//create the bag
@@ -117,7 +118,7 @@ function addBag() {
 	md.maxForce = 400;
 	bag.m_body.string = world.CreateJoint(md);
 }
-
+*/
 function init() {
       var map;
 
