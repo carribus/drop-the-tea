@@ -1,8 +1,6 @@
 window.addEventListener("DOMContentLoaded", function() {
    // Grab elements, create settings, etc.
-   var canvas = document.getElementById("vidcan"),
-      context = canvas.getContext("2d"),
-      video = document.getElementById("video"),
+   var video = document.getElementById("video"),
       videoObj = { "video": true },
       errBack = function(error) {
          console.log("Video capture error: ", error.code); 
@@ -27,7 +25,13 @@ window.addEventListener("DOMContentLoaded", function() {
       }, errBack);
    }
 
-   document.getElementById("snap").addEventListener("click", function() {
+document.getElementById("snap").addEventListener("click", function() {
+   var canvas = document.createElement('canvas');
+   canvas.width = 640;
+   canvas.height = 480;
+   context = canvas.getContext("2d");
    context.drawImage(video, 0, 0, 640, 480);
+   document.body.appendChild(canvas);
 });
+
 }, false);
