@@ -1,18 +1,17 @@
+var DEBUG_FLAGS = {
+    verboseLogging: false
+}
+
 var peg, bag;
+
 
 var teaImageObj = new Image();
 teaImageObj.src = './gfx/teabag.png';
 teaImageObj.height = 65.5;
 teaImageObj.width = 56;
 
-var level = {
-      shapes: [{
-            type: 'c',
-            velocity: {x: 10, y: 0},
-            flip: 100,
-            position: {x: 10, y: 10}
-      }]
-}
+var level = levels[0]
+
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2AABB = Box2D.Collision.b2AABB,
@@ -28,6 +27,7 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef,
       b2ContactListener = Box2D.Dynamics.b2ContactListener;
 
+var ctx;
 
 var world = new b2World(
       new b2Vec2(0, 10) //gravity
@@ -40,22 +40,57 @@ var pegs = [];
 var fixDef = new b2FixtureDef;
 fixDef.density = 1.0;
 fixDef.friction = 0.5;
-fixDef.restitution = 0.2;
+fixDef.restitution = 0.4;
 
 var bodyDef = new b2BodyDef;
 
 /*
  * Collision Listener object
  */
-var contactListener = new b2ContactListener();
+function ContactListener() {
+    this.listeners = [];
+};
+ContactListener.prototype = Object.create(b2ContactListener.prototype);
+ContactListener.prototype.constructor = ContactListener;
+
+ContactListener.prototype.on = function(body, listener) {
+    this.listeners.push({"body": body, "once": false, "listener": listener});
+}
+
+ContactListener.prototype.once = function(body, listener) {
+    this.listeners.push({"body": body, "once": true, "listener": listener});
+}
+
+ContactListener.prototype.notify = function(body, otherBody) {
+    var listener;
+    for ( var i = 0, len = this.listeners.length; i < len; i++ ) {
+        if ( body == this.listeners[i].body || otherBody == this.listeners[i].body ) {
+            listener = this.listeners[i].listener;
+            // remove the listener if its a 'once-off'
+            if ( this.listeners[i].once ) {
+                this.listeners.splice(i--);
+            }
+            listener(this.listeners[i].body);
+        }
+    }
+}
+
+var contactListener = new ContactListener();
+
 contactListener.BeginContact = function(contact) {
-    console.log('BeginContact');
-    console.log(contact);
+    if ( DEBUG_FLAGS.verboseLogging ) {
+        console.log('BeginContact');
+        console.log(contact);
+    }
+
+    this.notify(contact.m_fixtureA.m_body, contact.m_fixtureB.m_body);
 }
 
 contactListener.EndContact = function(contact) {
-    console.log('EndContact');
-    console.log(contact);
+    if ( DEBUG_FLAGS.verboseLogging ) {
+        console.log('EndContact');
+        console.log(contact);
+    }
 }
 
 function addBag() {
@@ -64,6 +99,7 @@ function addBag() {
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
 	fixDef.shape = new b2CircleShape(0.601);
+
 	bag.position.x = 15;
 	bag.position.y = 1;
 	bag = world.CreateBody(bag).CreateFixture(fixDef);
@@ -75,6 +111,13 @@ function addBag() {
 	md.collideConnected = true;
 	md.maxForce = 400;
 	bag.m_body.string = world.CreateJoint(md);
+
+//    contactListener.on(bag.m_body, onBagCollision);
+
+}
+
+function onBagCollision() {
+    console.log('Your bag touched something icky...');
 }
 
 function init() {
@@ -105,23 +148,94 @@ function init() {
       //       }
       // }
 
+      function addc(s){
+            fixDef.shape = new b2CircleShape(
+                  0.3 //radius
+            );  
+
+            bodyDef.position.x = s.position.x;
+            bodyDef.position.y = s.position.y;
+
+            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));    
+
+            s.fixture = map;      
+            if(s.av){
+              s.fixture.m_body.SetAngularVelocity(s.av);
+            }
+      }
+
+      function addb(s){
+            fixDef.shape = new b2PolygonShape;
+            fixDef.shape.SetAsOrientedBox(s.size.w, s.size.h, 
+                  new b2Vec2(s.origin.x,s.origin.y), s.r);
+
+            bodyDef.position.x = s.position.x;
+            bodyDef.position.y = s.position.y;
+
+            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y), s.r);    
+
+            s.fixture = map;      
+            if(s.av){
+              s.fixture.m_body.SetAngularVelocity(s.av);    
+            }
+      }
+
+      function addcup(s){
+            for(var i = 0; i < 3; i++){
+                  fixDef.shape = new b2PolygonShape;
+                  switch(i){
+                        case 0:
+                            fixDef.shape.SetAsBox(0.1, 4);    
+                            bodyDef.position.x = s.position.x - s.size.w + -.11;
+                            bodyDef.position.y = s.position.y - 3.2;
+                            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+                            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
+                        break;
+                        case 1:
+                            fixDef.shape.SetAsBox(s.size.w - 1.78, 2);   
+                            bodyDef.position.x = s.position.x - 1.78;
+                            bodyDef.position.y = s.position.y - 1.2;
+                            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+                            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
+                            contactListener.on(map.m_body, function(body) {
+                            console.info('Cup cup cup. FUck you cup');
+                            })
+                        break;
+                        case 2:
+                            fixDef.shape.SetAsBox(0.1, 4);   
+                            bodyDef.position.x = s.position.x + s.size.w - 3.46;
+                            bodyDef.position.y = s.position.y - 3.2;
+                            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+                            map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
+                        break;
+                  }
+                   
+
+                  
+
+
+                  s.fixture = map;      
+                  if(s.av){
+                    s.fixture.m_body.SetAngularVelocity(s.av);    
+                  }                      
+            }
+   
+      }
+
       for(var i = 0; i < level.shapes.length; i++){
-            switch(level.shapes[i]){
+            switch(level.shapes[i].type){
                   case 'c':
-                   fixDef.shape = new b2CircleShape(
-                        0.3 //radius
-                  );          
+                        addc(level.shapes[i]);
+                  break;
+                  case 'b':
+                        addb(level.shapes[i]);
+                  break;
+                  case 'cup':
+                        addcup(level.shapes[i]);
                   break;
             }
-
-            bodyDef.position.x = level.shapes[i].position.x;
-            bodyDef.position.y = level.shapes[i].position.y;
-            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-            map.m_body.SetLinearVelocity (new b2Vec2(level.shapes[i].velocity.x, level.shapes[i].velocity.y));    
-
-            level.shapes[i].fixture = map;      
-
       }
 
       //create ground
@@ -154,15 +268,26 @@ function init() {
 
 
       //setup debug draw
+      ctx = document.getElementById('canvas').getContext('2d');
       var debugDraw = new b2DebugDraw();
-      debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+      debugDraw.SetSprite(ctx);
       debugDraw.SetDrawScale(30.0);
       debugDraw.SetFillAlpha(0.5);
       debugDraw.SetLineThickness(1.0);
       debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
       world.SetDebugDraw(debugDraw);
 
-      window.setInterval(update, 1000 / 60);
+      window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+      //window.setInterval(update, 1000 / 60);
+    window.requestAnimFrame(update);
 
       //mouse
 
@@ -203,16 +328,20 @@ function init() {
 
       //update
       function update() {
+          window.requestAnimFrame(update);
+
             frame++;
             world.Step(1 / 60, 10, 10);
             world.DrawDebugDataCustom();
+
             world.ClearForces();
 
             for(var i = 0; i < level.shapes.length; i++){
                   if(!level.shapes[i].flip) continue;
                   if(frame % level.shapes[i].flip === 0){
                         velocity = level.shapes[i].fixture.m_body.GetLinearVelocity();
-                        level.shapes[i].fixture.m_body.SetLinearVelocity(new b2Vec2(-velocity.x, velocity.y));                       
+                        level.shapes[i].fixture.m_body.SetLinearVelocity(new b2Vec2(-velocity.x, velocity.y));
+                        
                   }
             }
       };
