@@ -36,7 +36,8 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2CircleShape = Box2D.Collision.Shapes.b2CircleShape,
       b2DebugDraw = Box2D.Dynamics.b2DebugDraw,
       b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef,
-      b2ContactListener = Box2D.Dynamics.b2ContactListener;
+      b2ContactListener = Box2D.Dynamics.b2ContactListener,
+      b2Math = Box2D.Common.Math.b2Math;
 
 var ctx;
 
@@ -124,7 +125,7 @@ function drawWall(body) {
 
     device.ctx.save();
     device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
-    device.fillStyle = 'red';
+    device.ctx.fillStyle = 'rgb(255, 0, 0)';
     device.ctx.fillRect(
         device.drawScale * verts[0].x,
         device.drawScale * verts[0].y,
@@ -151,12 +152,61 @@ function drawPeg(body) {
 function drawPlatform(body) {
     var fixture = body.m_fixtureList;
     var pos = body.GetPosition();
+    var localverts = fixture.GetShape().GetVertices();
+    var verts = [];
+
+    for ( var v = 0, len = localverts.length; v < len; v++ ) {
+        verts[v] = b2Math.MulX(body.m_xf, localverts[v]);
+    }
+
+    device.ctx.save();
+    device.ctx.fillStyle = 'white';
+    device.ctx.beginPath();
+    device.ctx.moveTo(verts[0].x * device.drawScale, verts[0].y * device.drawScale);
+    for ( v = 1; v < len; v++ ) {
+        device.ctx.lineTo(verts[v].x * device.drawScale, verts[v].y * device.drawScale);
+    }
+    device.ctx.lineTo(verts[0].x * device.drawScale, verts[0].y * device.drawScale);
+    device.ctx.closePath();
+    device.ctx.fill();
+    device.ctx.restore();
+}
+
+function drawBall(body) {
+    var fixture = body.m_fixtureList;
+    var pos = body.GetPosition();
+    var radius = fixture.GetShape().GetRadius();
+
+    device.ctx.save();
+    device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+    device.ctx.fillStyle = 'rgb(196,196,196)';
+    device.ctx.beginPath();
+    device.ctx.arc(0, 0, radius*device.drawScale, 0, 2 * Math.PI, false);
+    device.ctx.fill();
+    device.ctx.restore();
+}
+
+function drawTeabag(body) {
+    var fixture = body.m_fixtureList;
+    var pos = body.GetPosition();
+    var radius = fixture.GetShape().GetRadius();
+
+    device.ctx.save();
+    device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+    device.ctx.rotate(body.GetAngle() - 30);
+    device.ctx.drawImage(teaImageObj, -(teaImageObj.width / 2),-(teaImageObj.height / 2))
+    device.ctx.restore();
+}
+
+function drawCup(body) {
+    var fixture = body.m_fixtureList;
+    var pos = body.GetPosition();
     var verts = fixture.GetShape().GetVertices();
 
     device.ctx.save();
     device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
     device.ctx.rotate(body.GetAngle());
-    device.fillStyle = 'white';
+    device.ctx.fillStyle = 'green';
     device.ctx.fillRect(
         device.drawScale * verts[0].x,
         device.drawScale * verts[0].y,
@@ -166,6 +216,25 @@ function drawPlatform(body) {
     device.ctx.restore();
 }
 
+function drawCollectible(body) {
+    var fixture = body.m_fixtureList;
+    var pos = body.GetPosition();
+    var verts = fixture.GetShape().GetVertices();
+
+    device.ctx.save();
+    device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+    device.ctx.rotate(body.GetAngle());
+    device.ctx.fillStyle = 'yellow';
+    device.ctx.fillRect(
+        device.drawScale * verts[0].x,
+        device.drawScale * verts[0].y,
+        device.drawScale * verts[2].x - device.drawScale * verts[0].x,
+        device.drawScale * verts[2].y - device.drawScale * verts[0].y
+    );
+    device.ctx.restore();
+}
+
+// Call defined on html onclick in index.html -- DO NOT DELETE (again)
 function addBag() {
 
 	//create the bag
@@ -175,6 +244,7 @@ function addBag() {
   fixDef.type = 'bag';
 	bag.position.x = 15;
 	bag.position.y = 1;
+    bag.userData = { render: drawTeabag };
 	bag = world.CreateBody(bag).CreateFixture(fixDef);
   bag.m_body.type = 'bag';
 
@@ -223,7 +293,8 @@ function init() {
             bodyDef.position.x = s.position.x;
             bodyDef.position.y = s.position.y;
 
-            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+          bodyDef.userData = { render: drawBall};
+          map = world.CreateBody(bodyDef).CreateFixture(fixDef);
             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));    
 
             s.fixture = map;      
@@ -270,6 +341,7 @@ function init() {
                             fixDef.shape.SetAsBox(0.1, 4);    
                             bodyDef.position.x = s.position.x - s.size.w + -.11;
                             bodyDef.position.y = s.position.y - 3.2;
+                            bodyDef.userData = {render: drawCup};
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                         break;
@@ -278,6 +350,7 @@ function init() {
                             fixDef.shape.SetAsBox(s.size.w - 1.78, 2);   
                             bodyDef.position.x = s.position.x - 1.78;
                             bodyDef.position.y = s.position.y - 1.2;
+                            bodyDef.userData = {render: drawCup};
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                             contactListener.on(map.m_body, function(body) {
@@ -295,6 +368,7 @@ function init() {
                             fixDef.shape.SetAsBox(0.1, 4);   
                             bodyDef.position.x = s.position.x + s.size.w - 3.46;
                             bodyDef.position.y = s.position.y - 3.2;
+                            bodyDef.userData = {render: drawCup};
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                         break;
@@ -316,11 +390,11 @@ function init() {
 
         bodyDef.position.x = s.position.x;
         bodyDef.position.y = s.position.y;
+        bodyDef.userData = {render: drawCollectible, collectible: true};
 
         map = world.CreateBody(bodyDef).CreateFixture(fixDef);
         map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y), s.r);
 
-        map.m_body.m_userData = {collectible: true};
         contactListener.on(map.m_body, onCollectibleTouched);
 
         s.fixture = map;
@@ -424,13 +498,13 @@ function init() {
 
       //setup debug draw
       device.ctx = document.getElementById('canvas').getContext('2d');
-      var debugDraw = new b2DebugDraw();
-      debugDraw.SetSprite(device.ctx);
-      debugDraw.SetDrawScale(device.drawScale);
-      debugDraw.SetFillAlpha(0.5);
-      debugDraw.SetLineThickness(1.0);
-      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-      world.SetDebugDraw(debugDraw);
+//      var debugDraw = new b2DebugDraw();
+//      debugDraw.SetSprite(device.ctx);
+//      debugDraw.SetDrawScale(device.drawScale);
+//      debugDraw.SetFillAlpha(0.5);
+//      debugDraw.SetLineThickness(1.0);
+//      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+//      world.SetDebugDraw(debugDraw);
 
       window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       ||
@@ -501,7 +575,11 @@ function init() {
             }
 
             // 3. Render the world
-            world.DrawDebugDataCustom();
+            //world.DrawDebugDataCustom();
+          if ( !DEBUG_FLAGS.motionBlurRender.enabled ) {
+              device.ctx.fillStyle = 'black';
+              device.ctx.fillRect(0, 0, device.width, device.height);
+          }
 
           for ( var b = world.GetBodyList(); b; b = b.m_next ) {
               if ( b.m_userData ) {
