@@ -162,6 +162,10 @@ function init() {
             if(s.av){
               s.fixture.m_body.SetAngularVelocity(s.av);
             }
+
+            contactListener.on(map.m_body, function(body) {
+              sfx.pop.play();
+            });
       }
 
       function addb(s){
@@ -179,6 +183,10 @@ function init() {
             if(s.av){
               s.fixture.m_body.SetAngularVelocity(s.av);    
             }
+
+            contactListener.on(map.m_body, function(body) {
+              sfx.pop.play();
+            });
       }
 
       function addcup(s){
@@ -200,11 +208,12 @@ function init() {
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                             contactListener.on(map.m_body, function(body) {
-                            console.info('Cup cup cup. FUck you cup');
+                            sfx.cup.play();
                             document.getElementById('happy').style.display = 'block';
                             setTimeout(function(){
                               document.getElementById('happy').style.display = 'none';
                             }, 50);
+
                             });
                             fixDef.restitution = 0.4;
                         break;
@@ -245,7 +254,9 @@ function init() {
             s.fixture.m_body.SetAngularVelocity(s.av);
         }
         fixDef.isSensor = false;
-
+        contactListener.on(map.m_body, function(body) {
+          sfx.collect.play();
+        });
     }
 
     function onCollectibleTouched(bodyA, bodyB) {
@@ -287,8 +298,21 @@ function init() {
       //Top bottom limits
       fixDef.shape = new b2PolygonShape;
       fixDef.shape.SetAsBox(40, 2);
+      fixDef.friction = 1;
+      fixDef.restitution = 0;
       bodyDef.position.Set(10, 900 / 30 + 1.8);
-      world.CreateBody(bodyDef).CreateFixture(fixDef);
+      var bottom = world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+      contactListener.on(bottom.m_body, function(body) {
+        document.getElementById('sad').style.display = 'block';
+        setTimeout(function(){
+          document.getElementById('sad').style.display = 'none';
+        }, 50);
+        sfx.no.play();
+      });
+      fixDef.friction = 0.5;
+      fixDef.restitution = 0.4;
+
       bodyDef.position.Set(10, -1.8);
       world.CreateBody(bodyDef).CreateFixture(fixDef);
 

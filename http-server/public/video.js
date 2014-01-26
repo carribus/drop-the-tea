@@ -52,16 +52,19 @@ function next(a, b, id){
    }
 };
 
-init();
+//init();
 
 
 var theme = new Howl({
   urls: ['sound/theme.mp3'],
-  volume: 0.5
+  volume: 0.5,
+  loop: true
 }).play();
 
 sfx = {
    pop: new Howl({ urls: ['sound/pop.mp3'] }),
    cup: new Howl({ urls: ['sound/cup.mp3'] }),
-   stir: new Howl({ urls: ['sound/stir.mp3'] })
+   stir: new Howl({ urls: ['sound/stir.mp3'] }),
+   collect: new Howl({ urls: ['sound/collect.mp3'] }),
+   no: new Howl({ urls: ['sound/no.mp3'] })
 }
