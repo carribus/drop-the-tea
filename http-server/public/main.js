@@ -117,49 +117,54 @@ contactListener.EndContact = function(contact) {
     }
 }
 
-function Sprite() {
-    this.x = undefined;
-    this.y = undefined;
-    this.color = 'rgb(255, 128, 128)';
-    this.image = undefined;
-    this.width = undefined;
-    this.height = undefined;
-    this.rotation = undefined;
+function drawWall(body) {
+    var fixture = body.m_fixtureList;
+    var pos = body.GetPosition();
+    var verts = fixture.GetShape().GetVertices();
+
+    device.ctx.save();
+    device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+    device.fillStyle = 'red';
+    device.ctx.fillRect(
+        device.drawScale * verts[0].x,
+        device.drawScale * verts[0].y,
+        device.drawScale * verts[2].x - device.drawScale * verts[0].x,
+        device.drawScale * verts[2].y - device.drawScale * verts[0].y
+    );
+    device.ctx.restore();
 }
 
-Sprite.prototype.update = function(body) {
+function drawPeg(body) {
+    var fixture = body.m_fixtureList;
+    var pos = body.GetPosition();
+    var radius = fixture.GetShape().GetRadius();
+
+    device.ctx.save();
+    device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+    device.ctx.fillStyle = 'rgb(255, 128, 128)';
+    device.ctx.beginPath();
+    device.ctx.arc(0, 0, radius*device.drawScale, 0, 2 * Math.PI, false);
+    device.ctx.fill();
+    device.ctx.restore();
 }
 
-Sprite.prototype.render = function(ctx) {
-    ctx.save();
-    ctx.translate(this.x * device.drawScale, this.y * device.drawScale);
-    ctx.rotate(this.angle);
-    ctx.translate(-(this.x) * device.drawScale, -(this.y) * device.drawScale);
-    if ( this.customRender ) {
-        this.customRender(ctx);
-    } else {
-        ctx.fillStyle = this.color;
-        ctx.fillRect(
-            (this.x-(this.width / 2)) * device.drawScale,
-            (this.y-(this.height / 2)) * device.drawScale,
-            this.width * device.drawScale,
-            this.height * device.drawScale
-        );
-    }
-    ctx.restore();
+function drawPlatform(body) {
+    var fixture = body.m_fixtureList;
+    var pos = body.GetPosition();
+    var verts = fixture.GetShape().GetVertices();
+
+    device.ctx.save();
+    device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+    device.ctx.rotate(body.GetAngle());
+    device.fillStyle = 'white';
+    device.ctx.fillRect(
+        device.drawScale * verts[0].x,
+        device.drawScale * verts[0].y,
+        device.drawScale * verts[2].x - device.drawScale * verts[0].x,
+        device.drawScale * verts[2].y - device.drawScale * verts[0].y
+    );
+    device.ctx.restore();
 }
-
-function Teabag() {
-    Sprite.call(this);
-    this.image = teaImageObj;
-}
-Teabag.prototype = Object.create(Sprite.prototype);
-Teabag.prototype.constructor = Teabag;
-
-Teabag.prototype.customRender = function(ctx) {
-
-}
-
 
 function addBag() {
 
@@ -241,6 +246,7 @@ function init() {
             bodyDef.position.x = s.position.x;
             bodyDef.position.y = s.position.y;
 
+            bodyDef.userData = { render: drawPlatform };
             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y), s.r);    
 
@@ -375,6 +381,7 @@ function init() {
       fixDef.friction = 1;
       fixDef.restitution = 0;
       bodyDef.position.Set(10, 900 / device.drawScale + 1.8);
+      bodyDef.userData = { render: drawWall };
       var bottom = world.CreateBody(bodyDef).CreateFixture(fixDef);
 
       contactListener.on(bottom.m_body, function(body) {
@@ -390,14 +397,26 @@ function init() {
       fixDef.restitution = 0.4;
 
       bodyDef.position.Set(10, -1.8);
+      bodyDef.userData = { render: drawWall };
       world.CreateBody(bodyDef).CreateFixture(fixDef);
 
       //Left Right
       fixDef.shape.SetAsBox(2, 18);
       bodyDef.position.Set(-1.8, 17);
+      bodyDef.userData = { render: drawWall };
       world.CreateBody(bodyDef).CreateFixture(fixDef);
       bodyDef.position.Set(1400 / device.drawScale + 1.8, 13);
+      bodyDef.userData = { render: drawWall };
       world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+      //create the peg
+      peg = new b2BodyDef;
+      peg.type = b2Body.b2_staticBody;
+      fixDef.shape = new b2CircleShape(0.1);
+      peg.position.x = 22;
+      peg.position.y = 1;
+      peg.userData = { render: drawPeg };
+      peg = world.CreateBody(peg).CreateFixture(fixDef);
 
       //create the bag attached to the peg
 
@@ -473,8 +492,6 @@ function init() {
             world.ClearForces();
 
             // 2. Update the world
-
-
             for(var i = 0; i < level.shapes.length; i++){
                 if(!level.shapes[i].flip) continue;
                 if(frame % level.shapes[i].flip === 0){
@@ -485,6 +502,14 @@ function init() {
 
             // 3. Render the world
             world.DrawDebugDataCustom();
+
+          for ( var b = world.GetBodyList(); b; b = b.m_next ) {
+              if ( b.m_userData ) {
+                  if (b.m_userData.render ) {
+                      b.m_userData.render(b);
+                  }
+              }
+          }
 
             if (world.m_jointList) {
               ctx = document.getElementById('canvas').getContext('2d');
