@@ -14,7 +14,7 @@ var device = {
     drawScale: 30
 }
 
-var peg, bag;
+var peg, bag, playsfx = true, playtheme = false;
 
 var level = levels[0], currentLevel = 0;
 
@@ -226,7 +226,9 @@ function init() {
             }
 
             contactListener.on(map.m_body, function(body) {
-              sfx.pop.play();
+              if(playsfx){
+                sfx.pop.play();
+              }
             });
       }
 
@@ -247,7 +249,9 @@ function init() {
             }
 
             contactListener.on(map.m_body, function(body) {
-              sfx.pop.play();
+              if(playsfx){
+                sfx.pop.play();
+              }
             });
       }
 
@@ -270,7 +274,9 @@ function init() {
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                             contactListener.on(map.m_body, function(body) {
-                                sfx.cup.play();
+                                if(playsfx){
+                                  sfx.cup.play();
+                                }
                                 document.getElementById('happy').style.display = 'block';
                                 setTimeout(function(){
                                   document.getElementById('happy').style.display = 'none';
@@ -323,7 +329,9 @@ function init() {
         var cObj = bodyA.m_userData.collectible ? bodyA : bodyB;
         flagForDeletion(cObj);
         contactListener.on(map.m_body, function(body) {
-          sfx.collect.play();
+          if(playsfx){
+            sfx.collect.play();
+          }
         });
     }
 
@@ -359,7 +367,9 @@ function init() {
         setTimeout(function(){
           document.getElementById('sad').style.display = 'none';
         }, 50);
-        sfx.no.play();
+        if(playsfx){
+          sfx.no.play();
+        }
       });
       fixDef.friction = 0.5;
       fixDef.restitution = 0.4;
@@ -474,14 +484,13 @@ function init() {
               var j = world.m_jointList;
               ctx.save();
               while (j) {
-                ctx.moveTo(j.m_bodyA.m_xf.position.x * 20, j.m_bodyA.m_xf.position.y * 20);
-                ctx.lineTo(j.m_bodyB.m_xf.position.x * 20, j.m_bodyB.m_xf.position.y * 20);
+                ctx.moveTo(j.m_bodyA.m_xf.position.x * device.drawScale, j.m_bodyA.m_xf.position.y * device.drawScale);
+                ctx.lineTo(j.m_bodyB.m_xf.position.x * device.drawScale, j.m_bodyB.m_xf.position.y * device.drawScale);
                 ctx.strokeStyle = '#ff0000';
                 ctx.stroke();
                 j = j.m_next;
               }
               ctx.restore();
-
             }
 
             if ( DEBUG_FLAGS.drawFrameCount ) {

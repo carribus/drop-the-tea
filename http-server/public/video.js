@@ -45,6 +45,7 @@ function next(a, b, id){
       b.style.display = 'block';
    }else{
       init();
+      toggletheme();
    }
 
    if(id){
@@ -54,12 +55,11 @@ function next(a, b, id){
 
 //init();
 
-
 var theme = new Howl({
   urls: ['sound/theme.mp3'],
   volume: 0.5,
   loop: true
-}).play();
+});
 
 sfx = {
    pop: new Howl({ urls: ['sound/pop.mp3'] }),
@@ -67,4 +67,16 @@ sfx = {
    stir: new Howl({ urls: ['sound/stir.mp3'] }),
    collect: new Howl({ urls: ['sound/collect.mp3'] }),
    no: new Howl({ urls: ['sound/no.mp3'] })
+};
+
+function toggletheme(){
+  playtheme = !playtheme;
+
+  if(playtheme){
+    theme.play();
+  }else{
+    theme.stop();
+  }
+
 }
+
