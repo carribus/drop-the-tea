@@ -14,7 +14,9 @@ var device = {
     drawScale: 30
 }
 
-var peg, bag, playsfx = true, playtheme = false;
+var peg, bag, playsfx = true, playtheme = false, cups=[];
+var cupimg = new Image();
+cupimg.src = './img/cup.png';
 
 var level = levels[0], currentLevel = 0;
 
@@ -39,15 +41,12 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2ContactListener = Box2D.Dynamics.b2ContactListener,
       b2Math = Box2D.Common.Math.b2Math;
 
-var ctx;
-
 var world = new b2World(
       new b2Vec2(0, 10) //gravity
       , true //allow sleep
 );
 var frame = 0;
 var pegs = [];
-var shapes = {};
 var objectsToBeDeleted = [];
 
 var fixDef = new b2FixtureDef;
@@ -206,16 +205,22 @@ function drawCup(body) {
     var pos = body.GetPosition();
     var verts = fixture.GetShape().GetVertices();
 
+    // device.ctx.save();
+    // device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+    // device.ctx.rotate(body.GetAngle());
+    // device.ctx.fillStyle = 'green';
+    // device.ctx.fillRect(
+    //     device.drawScale * verts[0].x,
+    //     device.drawScale * verts[0].y,
+    //     device.drawScale * verts[2].x - device.drawScale * verts[0].x,
+    //     device.drawScale * verts[2].y - device.drawScale * verts[0].y
+    // );
+    // device.ctx.restore();
+
     device.ctx.save();
-    device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
-    device.ctx.rotate(body.GetAngle());
-    device.ctx.fillStyle = 'green';
-    device.ctx.fillRect(
-        device.drawScale * verts[0].x,
-        device.drawScale * verts[0].y,
-        device.drawScale * verts[2].x - device.drawScale * verts[0].x,
-        device.drawScale * verts[2].y - device.drawScale * verts[0].y
-    );
+    for (var i = 0; i < cups.length; i++) {
+      device.ctx.drawImage(cupimg, 0, 0, cupimg.width, cupimg.height, (cups[i].m_body.m_xf.position.x - 8.4) * device.drawScale, (cups[i].m_body.m_xf.position.y - 6) * device.drawScale, cupimg.width, cupimg.height);
+    }
     device.ctx.restore();
 }
 
@@ -337,12 +342,13 @@ function init() {
       }
 
       function addcup(s){
+        var cupbody, map;
             for(var i = 0; i < 3; i++){
                   fixDef.shape = new b2PolygonShape;
                   switch(i){
                         case 0:
-                            fixDef.shape.SetAsBox(0.1, 4);    
-                            bodyDef.position.x = s.position.x - s.size.w + -.11;
+                            fixDef.shape.SetAsBox(0.5, 4);    
+                            bodyDef.position.x = s.position.x - s.size.w + 0.4;
                             bodyDef.position.y = s.position.y - 3.2;
                             bodyDef.userData = {render: drawCup};
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
@@ -371,10 +377,11 @@ function init() {
                                 }, 50);
                             });
                             fixDef.restitution = 0.4;
+                            cupbody = map;
                         break;
                         case 2:
-                            fixDef.shape.SetAsBox(0.1, 4);   
-                            bodyDef.position.x = s.position.x + s.size.w - 3.46;
+                            fixDef.shape.SetAsBox(0.5, 4);   
+                            bodyDef.position.x = s.position.x + s.size.w - 4;
                             bodyDef.position.y = s.position.y - 3.2;
                             bodyDef.userData = {render: drawCup};
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
@@ -392,6 +399,8 @@ function init() {
                     s.fixture.m_body.SetAngularVelocity(s.av);    
                   }                      
             }
+
+            return cupbody;
    
       }
 
@@ -428,6 +437,7 @@ function init() {
     }
 
     drawLevel = function(){
+            cups = [];
             //create the peg
              bodyDef.type = b2Body.b2_staticBody;
             peg = new b2BodyDef;
@@ -448,7 +458,7 @@ function init() {
                         addb(level.shapes[i]);
                   break;
                   case 'cup':
-                        addcup(level.shapes[i]);
+                        cups.push(addcup(level.shapes[i]));
                   break;
                 case 'collectible':
                     addCollectible(level.shapes[i]);
@@ -600,29 +610,28 @@ function init() {
           }
 
             if (world.m_jointList) {
-              ctx = document.getElementById('canvas').getContext('2d');
               var j = world.m_jointList;
-              ctx.save();
+              device.ctx.save();
               while (j) {
-                ctx.moveTo(j.m_bodyA.m_xf.position.x * device.drawScale, j.m_bodyA.m_xf.position.y * device.drawScale);
-                ctx.lineTo(j.m_bodyB.m_xf.position.x * device.drawScale, j.m_bodyB.m_xf.position.y * device.drawScale);
-                ctx.strokeStyle = '#ff0000';
-                ctx.stroke();
+                device.ctx.moveTo(j.m_bodyA.m_xf.position.x * device.drawScale, j.m_bodyA.m_xf.position.y * device.drawScale);
+                device.ctx.lineTo(j.m_bodyB.m_xf.position.x * device.drawScale, j.m_bodyB.m_xf.position.y * device.drawScale);
+                device.ctx.strokeStyle = '#ff0000';
+                device.ctx.stroke();
                 j = j.m_next;
               }
-              ctx.restore();
+              device.ctx.restore();
             }
 
             if ( DEBUG_FLAGS.drawFrameCount ) {
-                ctx.fillStyle = 'white';
-                ctx.fillText(''+frame, 10, 10);
+                device.ctx.fillStyle = 'white';
+                device.ctx.fillText(''+frame, 10, 10);
             }
 
             if ( DEBUG_FLAGS.motionBlurRender.enabled ) {
-                ctx.save();
-                ctx.fillStyle = 'rgba(0, 0, 0, ' + DEBUG_FLAGS.motionBlurRender.intensity + ')';
-                ctx.fillRect(0, 0, 1400, 900);
-                ctx.restore();
+                device.ctx.save();
+                device.ctx.fillStyle = 'rgba(0, 0, 0, ' + DEBUG_FLAGS.motionBlurRender.intensity + ')';
+                device.ctx.fillRect(0, 0, 1400, 900);
+                device.ctx.restore();
             }
 
             // 4. Process objects that have been marked for deletion

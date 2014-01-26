@@ -21,7 +21,7 @@ var levels = [
                     velocity: {x: 0, y: 0},
                     flip: 0,
                     position: {x: 30, y: 29},
-                    size: {w: 5, h: 2}
+                    size: {w: 7, h: 1}
                 },
                 {
                     type: 'collectible',
