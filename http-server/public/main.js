@@ -21,7 +21,7 @@ cupimg.src = './img/cup.png';
 var level = levels[0], currentLevel = 0;
 
 var teaImageObj = new Image();
-teaImageObj.src = './img/teabag.png';
+teaImageObj.src = './img/bag.png';
 
 var background = new Image();
 background.src = './img/background.png';
@@ -296,7 +296,7 @@ function init() {
 
       function addc(s){
             fixDef.shape = new b2CircleShape(
-                  0.3 //radius
+                  s.radius //radius
             );  
 
             bodyDef.position.x = s.position.x;
