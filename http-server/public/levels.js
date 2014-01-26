@@ -81,7 +81,7 @@ var levels = [
                     velocity: {x: 0, y: 0},
                     flip: 0,
                     position: {x: 24, y: 13},
-                    r: 45,
+                    r: 0,
                     size: {w: 0.5, h: 0.5},
                     origin: {x: .25, h: .25}
                 },
@@ -90,7 +90,7 @@ var levels = [
                     velocity: {x: 0, y: 0},
                     flip: 0,
                     position: {x: 20, y: 13},
-                    r: 45,
+                    r: 0,
                     size: {w: 0.5, h: 0.5},
                     origin: {x: .25, h: .25}
                 }
