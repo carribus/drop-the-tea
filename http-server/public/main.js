@@ -26,6 +26,9 @@ teaImageObj.src = './img/teabag.png';
 var background = new Image();
 background.src = './img/background.png';
 
+var sugarCubeObj = new Image();
+sugarCubeObj.src = './img/sugarcube.jpeg';
+
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2AABB = Box2D.Collision.b2AABB,
       b2BodyDef = Box2D.Dynamics.b2BodyDef,
@@ -228,17 +231,14 @@ function drawCollectible(body) {
     var fixture = body.m_fixtureList;
     var pos = body.GetPosition();
     var verts = fixture.GetShape().GetVertices();
+    var w = (verts[2].x - verts[0].x) * device.drawScale;
+    var h = (verts[2].y - verts[0].y) * device.drawScale;
 
     device.ctx.save();
     device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+    device.ctx.scale(w / sugarCubeObj.width, h / sugarCubeObj.height);
     device.ctx.rotate(body.GetAngle());
-    device.ctx.fillStyle = 'yellow';
-    device.ctx.fillRect(
-        device.drawScale * verts[0].x,
-        device.drawScale * verts[0].y,
-        device.drawScale * verts[2].x - device.drawScale * verts[0].x,
-        device.drawScale * verts[2].y - device.drawScale * verts[0].y
-    );
+    device.ctx.drawImage(sugarCubeObj, -(sugarCubeObj.width/2), -(sugarCubeObj.height/2));
     device.ctx.restore();
 }
 
