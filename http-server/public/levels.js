@@ -8,7 +8,7 @@ var levels = [
                     position: {x: 24, y: 12}
                 },
                 {
-                    type: 'b', // maze bar right
+                    type: 'b', // maze bar left
                     velocity: {x: 0, y: 0},
                     flip: 100,
                     position: {x: 12, y: 12},

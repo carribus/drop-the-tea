@@ -7,6 +7,13 @@ var DEBUG_FLAGS = {
     drawFrameCount: false
 }
 
+var device = {
+    ctx: null,
+    width: 1400,
+    height: 900,
+    drawScale: 30
+}
+
 var peg, bag;
 
 var level = levels[0]
@@ -39,6 +46,7 @@ var world = new b2World(
 );
 var frame = 0;
 var pegs = [];
+var shapes = {};
 var objectsToBeDeleted = [];
 
 var fixDef = new b2FixtureDef;
@@ -97,6 +105,49 @@ contactListener.EndContact = function(contact) {
     }
 }
 
+function Sprite() {
+    this.x = undefined;
+    this.y = undefined;
+    this.color = 'rgb(255, 128, 128)';
+    this.image = undefined;
+    this.width = undefined;
+    this.height = undefined;
+    this.rotation = undefined;
+}
+
+Sprite.prototype.update = function(body) {
+}
+
+Sprite.prototype.render = function(ctx) {
+    ctx.save();
+    ctx.translate(this.x * device.drawScale, this.y * device.drawScale);
+    ctx.rotate(this.angle);
+    ctx.translate(-(this.x) * device.drawScale, -(this.y) * device.drawScale);
+    if ( this.customRender ) {
+        this.customRender(ctx);
+    } else {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(
+            (this.x-(this.width / 2)) * device.drawScale,
+            (this.y-(this.height / 2)) * device.drawScale,
+            this.width * device.drawScale,
+            this.height * device.drawScale
+        );
+    }
+    ctx.restore();
+}
+
+function Teabag() {
+    Sprite.call(this);
+    this.image = teaImageObj;
+}
+Teabag.prototype = Object.create(Sprite.prototype);
+Teabag.prototype.constructor = Teabag;
+
+Teabag.prototype.customRender = function(ctx) {
+
+}
+
 
 function addBag() {
 
@@ -126,7 +177,7 @@ function init() {
       world.SetContactListener(contactListener);
 
       bodyDef.type = b2Body.b2_kinematicBody;
-      fixDef.shape = new b2CircleShape(0.4);
+//      fixDef.shape = new b2CircleShape(0.4);
       // for (var i = 1; i < 10; ++i) {
       //       for (var j = 0; j < 3; j++) {
       //             fixDef.shape = new b2CircleShape(
@@ -138,9 +189,9 @@ function init() {
       //             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
 
       //             if(j% 2){
-      //                   map.m_body.SetLinearVelocity (new b2Vec2(2, 0));    
+      //                   map.m_body.SetLinearVelocity (new b2Vec2(2, 0));
       //             }else{
-      //                   map.m_body.SetLinearVelocity (new b2Vec2(-2, 0)); 
+      //                   map.m_body.SetLinearVelocity (new b2Vec2(-2, 0));
       //             }
 
       //             pegs.push(map);
@@ -208,12 +259,11 @@ function init() {
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                             contactListener.on(map.m_body, function(body) {
-                            sfx.cup.play();
-                            document.getElementById('happy').style.display = 'block';
-                            setTimeout(function(){
-                              document.getElementById('happy').style.display = 'none';
-                            }, 50);
-
+                                sfx.cup.play();
+                                document.getElementById('happy').style.display = 'block';
+                                setTimeout(function(){
+                                  document.getElementById('happy').style.display = 'none';
+                                }, 50);
                             });
                             fixDef.restitution = 0.4;
                         break;
@@ -300,7 +350,7 @@ function init() {
       fixDef.shape.SetAsBox(40, 2);
       fixDef.friction = 1;
       fixDef.restitution = 0;
-      bodyDef.position.Set(10, 900 / 30 + 1.8);
+      bodyDef.position.Set(10, 900 / device.drawScale + 1.8);
       var bottom = world.CreateBody(bodyDef).CreateFixture(fixDef);
 
       contactListener.on(bottom.m_body, function(body) {
@@ -320,7 +370,7 @@ function init() {
       fixDef.shape.SetAsBox(2, 18);
       bodyDef.position.Set(-1.8, 17);
       world.CreateBody(bodyDef).CreateFixture(fixDef);
-      bodyDef.position.Set(1400 / 30 + 1.8, 13);
+      bodyDef.position.Set(1400 / device.drawScale + 1.8, 13);
       world.CreateBody(bodyDef).CreateFixture(fixDef);
 
       //create the peg
@@ -336,10 +386,10 @@ function init() {
 
 
       //setup debug draw
-      ctx = document.getElementById('canvas').getContext('2d');
+      device.ctx = document.getElementById('canvas').getContext('2d');
       var debugDraw = new b2DebugDraw();
-      debugDraw.SetSprite(ctx);
-      debugDraw.SetDrawScale(30.0);
+      debugDraw.SetSprite(device.ctx);
+      debugDraw.SetDrawScale(device.drawScale);
       debugDraw.SetFillAlpha(0.5);
       debugDraw.SetLineThickness(1.0);
       debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
@@ -363,8 +413,8 @@ function init() {
       var canvasPosition = getElementPosition(document.getElementById("canvas"));
 
       document.addEventListener("mousedown", function(e) {
-            mouseX = (e.clientX - canvasPosition.x) / 30;
-            mouseY = (e.clientY - canvasPosition.y) / 30;
+            mouseX = (e.clientX - canvasPosition.x) / device.drawScale;
+            mouseY = (e.clientY - canvasPosition.y) / device.drawScale;
             var clickedBag = getBodyAtMouse();
             if (clickedBag) {
                   world.DestroyJoint(clickedBag.string);
@@ -396,37 +446,42 @@ function init() {
 
       //update
       function update() {
-          window.requestAnimFrame(update);
-
+            window.requestAnimFrame(update);
             frame++;
             world.Step(1 / 30, 10, 10);
 
-          world.DrawDebugDataCustom();
+            // 1. Step the world
+            world.Step(1 / 30, 10, 10);
             world.ClearForces();
 
+            // 2. Update the world
+
+
             for(var i = 0; i < level.shapes.length; i++){
-                  if(!level.shapes[i].flip) continue;
-                  if(frame % level.shapes[i].flip === 0){
-                        velocity = level.shapes[i].fixture.m_body.GetLinearVelocity();
-                        level.shapes[i].fixture.m_body.SetLinearVelocity(new b2Vec2(-velocity.x, velocity.y));
-                        
-                  }
+                if(!level.shapes[i].flip) continue;
+                if(frame % level.shapes[i].flip === 0){
+                    velocity = level.shapes[i].fixture.m_body.GetLinearVelocity();
+                    level.shapes[i].fixture.m_body.SetLinearVelocity(new b2Vec2(-velocity.x, velocity.y));
+                }
             }
 
-          if ( DEBUG_FLAGS.drawFrameCount ) {
-              ctx.fillStyle = 'white';
-              ctx.fillText(''+frame, 10, 10);
-          }
+            // 3. Render the world
+            world.DrawDebugDataCustom();
 
-          if ( DEBUG_FLAGS.motionBlurRender.enabled ) {
-              ctx.save();
-              ctx.fillStyle = 'rgba(0, 0, 0, ' + DEBUG_FLAGS.motionBlurRender.intensity + ')';
-              ctx.fillRect(0, 0, 1400, 900);
-              ctx.restore();
-          }
+            if ( DEBUG_FLAGS.drawFrameCount ) {
+                ctx.fillStyle = 'white';
+                ctx.fillText(''+frame, 10, 10);
+            }
 
-          processObjectsForDeletion();
+            if ( DEBUG_FLAGS.motionBlurRender.enabled ) {
+                ctx.save();
+                ctx.fillStyle = 'rgba(0, 0, 0, ' + DEBUG_FLAGS.motionBlurRender.intensity + ')';
+                ctx.fillRect(0, 0, 1400, 900);
+                ctx.restore();
+            }
 
+            // 4. Process objects that have been marked for deletion
+            processObjectsForDeletion();
       };
 
       //helpers
