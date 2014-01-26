@@ -163,6 +163,14 @@ video {
 	color: #5f7fa3;
 	font-size: 76px;
 }
+
+.allow img {
+	position: absolute;
+	top: 50px;
+	-webkit-transform: rotate(-35deg);
+	right: 360px;
+}
+
 .allow h2 {
 	margin: -30px -20px;
 	padding: 20px 20px 46px;
