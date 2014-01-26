@@ -143,16 +143,16 @@ function drawWall(body) {
     var pos = body.GetPosition();
     var verts = fixture.GetShape().GetVertices();
 
-    device.ctx.save();
-    device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
-    device.ctx.fillStyle = 'rgb(255, 0, 0)';
-    device.ctx.fillRect(
-        device.drawScale * verts[0].x,
-        device.drawScale * verts[0].y,
-        device.drawScale * verts[2].x - device.drawScale * verts[0].x,
-        device.drawScale * verts[2].y - device.drawScale * verts[0].y
-    );
-    device.ctx.restore();
+    //device.ctx.save();
+    //device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+    //device.ctx.fillStyle = 'rgb(255, 0, 0)';
+    // device.ctx.fillRect(
+    //     device.drawScale * verts[0].x,
+    //     device.drawScale * verts[0].y,
+    //     device.drawScale * verts[2].x - device.drawScale * verts[0].x,
+    //     device.drawScale * verts[2].y - device.drawScale * verts[0].y
+    // );
+    // device.ctx.restore();
 }
 
 function drawPeg(body) {
@@ -182,7 +182,7 @@ function drawPlatform(body) {
     }
 
     device.ctx.save();
-    device.ctx.fillStyle = 'white';
+    device.ctx.fillStyle = '#5f7fa3';
     device.ctx.beginPath();
     device.ctx.moveTo(verts[0].x * device.drawScale, verts[0].y * device.drawScale);
     for ( v = 1; v < len; v++ ) {
@@ -201,7 +201,9 @@ function drawBall(body) {
 
     device.ctx.save();
     device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
-    device.ctx.fillStyle = 'rgb(196,196,196)';
+    device.ctx.fillStyle = '#5f7fa3';
+    device.ctx.lineWidth = 5;
+    device.ctx.strokeStyle = '#86BECC';
     device.ctx.beginPath();
     device.ctx.arc(0, 0, radius*device.drawScale, 0, 2 * Math.PI, false);
     device.ctx.fill();
@@ -391,10 +393,18 @@ function init() {
                                 if(playsfx){
                                   sfx.cup.play();
                                 }
-                                document.getElementById('happy').style.display = 'block';
+
+                                for(var j = 0; j < 5; j++){
                                 setTimeout(function(){
-                                  document.getElementById('happy').style.display = 'none';
-                                }, 10);
+                                  document.getElementById('happy').style.display = 'block';
+                                  setTimeout(function(){
+                                    document.getElementById('happy').style.display = 'none';
+                                  }, 50);  
+                                }, Math.random() * 600);   
+                                 
+                               
+                                }
+
                             });
                             fixDef.restitution = 0.4;
                             cupbody = map;
@@ -510,15 +520,15 @@ function init() {
       fixDef.shape.SetAsBox(40, 2);
       fixDef.friction = 1;
       fixDef.restitution = 0;
-      bodyDef.position.Set(10, 900 / device.drawScale + 1.8);
-      bodyDef.userData = { render: drawWall };
+      bodyDef.position.Set(10, 1200 / device.drawScale + 1.8);
+      bodyDef.userData = { render: drawWall, type: 'bottom' };
       var bottom = world.CreateBody(bodyDef).CreateFixture(fixDef);
 
       contactListener.on(bottom.m_body, function(body) {
         document.getElementById('sad').style.display = 'block';
         setTimeout(function(){
           document.getElementById('sad').style.display = 'none';
-        }, 10);
+        }, 50);
         if(playsfx){
           sfx.no.play();
         }
