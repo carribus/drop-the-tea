@@ -206,6 +206,7 @@ function drawBall(body) {
     device.ctx.beginPath();
     device.ctx.arc(0, 0, radius*device.drawScale, 0, 2 * Math.PI, false);
     device.ctx.fill();
+    device.ctx.stroke();
     device.ctx.restore();
 }
 
@@ -654,6 +655,21 @@ function init() {
           // }
            device.ctx.clearRect(0, 0, device.width, device.height);
 
+                       if (world.m_jointList) {
+              var j = world.m_jointList;
+              device.ctx.save();
+              while (j) {
+                device.ctx.beginPath();
+                device.ctx.moveTo(j.m_bodyA.m_xf.position.x * device.drawScale, j.m_bodyA.m_xf.position.y * device.drawScale);
+                device.ctx.lineTo(j.m_bodyB.m_xf.position.x * device.drawScale, j.m_bodyB.m_xf.position.y * device.drawScale);
+                device.ctx.lineWidth = 4;
+                device.ctx.strokeStyle = 'white';
+                device.ctx.stroke();
+                j = j.m_next;
+              }
+              device.ctx.restore();
+            }
+
           for ( var b = world.GetBodyList(); b; b = b.m_next ) {
               if ( b.m_userData ) {
                   if (b.m_userData.render ) {
@@ -662,19 +678,7 @@ function init() {
               }
           }
 
-            if (world.m_jointList) {
-              var j = world.m_jointList;
-              device.ctx.save();
-              while (j) {
-                device.ctx.moveTo(j.m_bodyA.m_xf.position.x * device.drawScale, j.m_bodyA.m_xf.position.y * device.drawScale);
-                device.ctx.lineTo(j.m_bodyB.m_xf.position.x * device.drawScale, j.m_bodyB.m_xf.position.y * device.drawScale);
-                device.ctx.lineWidth = 4;
-                device.ctx.strokeStyle = 'white';
-                device.ctx.stroke();
-                j = j.m_next;
-              }
-              device.ctx.strokeStyle = '#5f7fa3';
-            }
+
 
             if ( DEBUG_FLAGS.drawFrameCount ) {
                 device.ctx.fillStyle = 'white';
