@@ -3,9 +3,10 @@ var levels = [
             shapes: [
                 {
                     type: 'c', // maze ball
-                    velocity: {x: 0, y: 0},
-                    flip: 100,
-                    position: {x: 24, y: 12}
+                    velocity: {x: 10, y: 0},
+                    flip: 30,
+                    position: {x: 24, y: 12},
+                    radius: 1
                 },
                 {
                     type: 'b', // maze bar left

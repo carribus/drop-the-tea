@@ -4,7 +4,8 @@ var DEBUG_FLAGS = {
         enabled: false,
         intensity: 0.2
     },
-    drawFrameCount: false
+    drawFrameCount: false,
+    debugDraw: false
 }
 
 var device = {
@@ -21,7 +22,7 @@ cupimg.src = './img/cup.png';
 var level = levels[0], currentLevel = 0;
 
 var teaImageObj = new Image();
-teaImageObj.src = './img/teabag.png';
+teaImageObj.src = './img/bag.png';
 
 var background = new Image();
 background.src = './img/background.png';
@@ -208,17 +209,19 @@ function drawCup(body) {
     var pos = body.GetPosition();
     var verts = fixture.GetShape().GetVertices();
 
-    // device.ctx.save();
-    // device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
-    // device.ctx.rotate(body.GetAngle());
-    // device.ctx.fillStyle = 'green';
-    // device.ctx.fillRect(
-    //     device.drawScale * verts[0].x,
-    //     device.drawScale * verts[0].y,
-    //     device.drawScale * verts[2].x - device.drawScale * verts[0].x,
-    //     device.drawScale * verts[2].y - device.drawScale * verts[0].y
-    // );
-    // device.ctx.restore();
+    if ( DEBUG_FLAGS.debugDraw ) {
+        device.ctx.save();
+        device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+        device.ctx.rotate(body.GetAngle());
+        device.ctx.fillStyle = 'green';
+        device.ctx.fillRect(
+            device.drawScale * verts[0].x,
+            device.drawScale * verts[0].y,
+            device.drawScale * verts[2].x - device.drawScale * verts[0].x,
+            device.drawScale * verts[2].y - device.drawScale * verts[0].y
+        );
+        device.ctx.restore();
+    }
 
     device.ctx.save();
     //device.ctx.globalAlpha = 0.5;
@@ -249,7 +252,7 @@ function addBag() {
 	//create the bag
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
-	fixDef.shape = new b2CircleShape(1);
+	fixDef.shape = new b2CircleShape(2);
   fixDef.type = 'bag';
 	bag.position.x = 15;
 	bag.position.y = 1;
@@ -296,7 +299,7 @@ function init() {
 
       function addc(s){
             fixDef.shape = new b2CircleShape(
-                  0.3 //radius
+                  s.radius //radius
             );  
 
             bodyDef.position.x = s.position.x;
@@ -445,7 +448,7 @@ function init() {
 
     function onCollectibleTouched(bodyA, bodyB) {
         console.log('collectible touched');
-                  if(playsfx){
+          if(playsfx){
             sfx.collect.play();
           }
         var cObj = bodyA.m_userData.collectible ? bodyA : bodyB;
@@ -535,13 +538,6 @@ function init() {
 
       //setup debug draw
       device.ctx = document.getElementById('canvas').getContext('2d');
-//      var debugDraw = new b2DebugDraw();
-//      debugDraw.SetSprite(device.ctx);
-//      debugDraw.SetDrawScale(device.drawScale);
-//      debugDraw.SetFillAlpha(0.5);
-//      debugDraw.SetLineThickness(1.0);
-//      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-//      world.SetDebugDraw(debugDraw);
 
       window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       ||
@@ -611,11 +607,11 @@ function init() {
             }
 
             // 3. Render the world
-            //world.DrawDebugDataCustom();
-          if ( !DEBUG_FLAGS.motionBlurRender.enabled ) {
-              device.ctx.fillStyle = 'black';
-              device.ctx.fillRect(0, 0, device.width, device.height);
-          }
+          // if ( !DEBUG_FLAGS.motionBlurRender.enabled ) {
+          //     device.ctx.fillStyle = 'black';
+          //     device.ctx.fillRect(0, 0, device.width, device.height);
+          // }
+           device.ctx.clearRect(0, 0, device.width, device.height);
 
           for ( var b = world.GetBodyList(); b; b = b.m_next ) {
               if ( b.m_userData ) {
@@ -689,8 +685,9 @@ function init() {
         var list = world.m_bodyList;
 
         while(list.m_next){
-          console.log(list);
-          flagForDeletion(list);
+          if ( list.m_userData && list.m_userData.render != drawWall ) {
+              flagForDeletion(list);
+          }
           list = list.m_next;
         }
       }
