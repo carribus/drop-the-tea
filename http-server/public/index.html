@@ -21,9 +21,10 @@
          <canvas id="vidcan" width="640" height="480"></canvas>
 
          <canvas id="canvas" width="1400" height="900"></canvas>
-
          <button class="add-bag" onclick="addBag()">Add Bag</button>
+         <button onclick="toggletheme()">Theme Music</button>
          <!-- <button class="snap-photo" id="snap">Snap Photo</button> -->
+         <button onclick="nextLevel()">Next Level</button>
 
          <div class="camera allow" id="camera1">
             <h1>Drop the Tea</h1>
@@ -49,9 +50,6 @@
 
             <h1>Make a Happy Face (:</h1>
             <button onclick="next('camera2','camera3', 'happy')" id="camera1">OK</button>
-
-
-
             
          </div>
 
@@ -67,10 +65,9 @@
          </div>
 
       </div>
-
+      <script type="text/javascript" src="/howler.js"></script>
       <script type="text/javascript" src="/levels.js"></script>
       <script type="text/javascript" src="/Box2dWeb-2.1.a.3.js"></script>
-      <script type="text/javascript" src="/Box2dWebOverwrite.js"></script>
       <script type="text/javascript" src="/main.js"></script>
       <script type="text/javascript" src="/video.js"></script>
 

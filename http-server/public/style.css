@@ -1,5 +1,6 @@
 
 body {
+
 	font-family: Hannotate SC;
 	background: #fdfacc; /* Old browsers */
 	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
@@ -11,6 +12,13 @@ body {
 	background: -ms-linear-gradient(-45deg,  #fdfacc 0%,#ccf3fd 100%); /* IE10+ */
 	background: linear-gradient(135deg,  #fdfacc 0%,#ccf3fd 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fdfacc', endColorstr='#ccf3fd',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
 }
 
 #main {

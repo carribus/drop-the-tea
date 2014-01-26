@@ -45,9 +45,39 @@ function next(a, b, id){
       b.style.display = 'block';
    }else{
       init();
+      //toggletheme();
    }
 
    if(id){
       document.getElementById(id).appendChild(takephoto())
    }
 };
+
+//init();
+
+var theme = new Howl({
+  urls: ['sound/theme.mp3'],
+  volume: 0.5,
+  loop: true
+});
+
+sfx = {
+   pop: new Howl({ urls: ['sound/pop.mp3'] }),
+   cup: new Howl({ urls: ['sound/cup.mp3'] }),
+   stir: new Howl({ urls: ['sound/stir.mp3'] }),
+   collect: new Howl({ urls: ['sound/collect.mp3'] }),
+   no: new Howl({ urls: ['sound/no.mp3'] }),
+   plate: new Howl({ urls: ['sound/plate.mp3'] })
+};
+
+function toggletheme(){
+  playtheme = !playtheme;
+
+  if(playtheme){
+    theme.play();
+  }else{
+    theme.stop();
+  }
+
+}
+
