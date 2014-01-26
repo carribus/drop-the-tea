@@ -53,6 +53,7 @@ var fixDef = new b2FixtureDef;
 fixDef.density = 1.0;
 fixDef.friction = 0.5;
 fixDef.restitution = 0.4;
+var drawLevel;
 
 var bodyDef = new b2BodyDef;
 
@@ -335,7 +336,19 @@ function init() {
         });
     }
 
-      for(var i = 0; i < level.shapes.length; i++){
+    drawLevel = function(){
+            //create the peg
+             bodyDef.type = b2Body.b2_staticBody;
+            peg = new b2BodyDef;
+            peg.type = b2Body.b2_staticBody;
+            fixDef.shape = new b2CircleShape(0.1);
+            peg.position.x = 22;
+            peg.position.y = 1;
+            peg = world.CreateBody(peg).CreateFixture(fixDef);
+
+             bodyDef.type = b2Body.b2_kinematicBody;
+
+            for(var i = 0; i < level.shapes.length; i++){
             switch(level.shapes[i].type){
                   case 'c':
                         addc(level.shapes[i]);
@@ -351,6 +364,8 @@ function init() {
                     break;
             }
       }
+    }
+    drawLevel();
 
       //create ground
       bodyDef.type = b2Body.b2_staticBody;
@@ -383,14 +398,6 @@ function init() {
       world.CreateBody(bodyDef).CreateFixture(fixDef);
       bodyDef.position.Set(1400 / device.drawScale + 1.8, 13);
       world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-      //create the peg
-      peg = new b2BodyDef;
-      peg.type = b2Body.b2_staticBody;
-      fixDef.shape = new b2CircleShape(0.1);
-      peg.position.x = 22;
-      peg.position.y = 1;
-      peg = world.CreateBody(peg).CreateFixture(fixDef);
 
       //create the bag attached to the peg
 
@@ -549,3 +556,13 @@ function init() {
           list = list.m_next;
         }
       }
+
+  function nextLevel(){
+    removeBodys();
+    currentLevel++;
+    if(currentLevel === levels.length) currentLevel = 0;
+    level = levels[currentLevel];
+    drawLevel();
+  }
+
+

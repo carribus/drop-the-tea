@@ -17,13 +17,14 @@
          <button class="add-bag" onclick="addBag()">Add Bag</button>
          <button onclick="toggletheme()">Stop Theme</button>
          <!-- <button class="snap-photo" id="snap">Snap Photo</button> -->
+         <button onclick="nextLevel()">Next Level</button>
 
-         <div class="camera" id="camera1">
+         <div class="camera hide" id="camera1">
             <h1>Allow Camera Access Above</h1>
             <button onclick="next('camera1','camera2')">OK</button>
          </div>
 
-         <div class="camera hide" id="camera2">
+         <div class="camera" id="camera2">
             <h1>Make a Happy Face</h1>
             <button onclick="next('camera2','camera3', 'happy')" id="camera1">OK</button>
          </div>
