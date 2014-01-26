@@ -119,6 +119,7 @@ contactListener.EndContact = function(contact) {
 
 function drawWall(body) {
     var fixture = body.m_fixtureList;
+    if(fixture.GetShape() instanceof b2CircleShape) return;
     var pos = body.GetPosition();
     var verts = fixture.GetShape().GetVertices();
 
@@ -136,6 +137,7 @@ function drawWall(body) {
 
 function drawPeg(body) {
     var fixture = body.m_fixtureList;
+
     var pos = body.GetPosition();
     var radius = fixture.GetShape().GetRadius();
 
@@ -150,6 +152,7 @@ function drawPeg(body) {
 
 function drawPlatform(body) {
     var fixture = body.m_fixtureList;
+    if(fixture.GetShape() instanceof b2CircleShape) return;
     var pos = body.GetPosition();
     var verts = fixture.GetShape().GetVertices();
 
@@ -450,7 +453,7 @@ function init() {
 })();
 
       //window.setInterval(update, 1000 / 60);
-    window.requestAnimFrame(update);
+      window.requestAnimFrame(update);
 
       //mouse
 
@@ -493,10 +496,9 @@ function init() {
       function update() {
             window.requestAnimFrame(update);
             frame++;
-            world.Step(1 / 30, 10, 10);
 
             // 1. Step the world
-            world.Step(1 / 30, 10, 10);
+            world.Step(1 / 25, 10, 10);
             world.ClearForces();
 
             // 2. Update the world
