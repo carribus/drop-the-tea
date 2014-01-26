@@ -51,3 +51,17 @@ function next(a, b, id){
       document.getElementById(id).appendChild(takephoto())
    }
 };
+
+init();
+
+
+var theme = new Howl({
+  urls: ['sound/theme.mp3'],
+  volume: 0.5
+}).play();
+
+sfx = {
+   pop: new Howl({ urls: ['sound/pop.mp3'] }),
+   cup: new Howl({ urls: ['sound/cup.mp3'] }),
+   stir: new Howl({ urls: ['sound/stir.mp3'] })
+}
