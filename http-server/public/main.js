@@ -396,7 +396,7 @@ function init() {
 
           if ( DEBUG_FLAGS.motionBlurRender.enabled ) {
               ctx.save();
-              ctx.fillStyle = 'rgba(0, 0, 0, ' + DEBUG_FLAGS.motionBlurRender.intensity + ')';
+              ctx.fillStyle = 'rgba(110, 110, 110, ' + DEBUG_FLAGS.motionBlurRender.intensity + ')';
               ctx.fillRect(0, 0, 1400, 900);
               ctx.restore();
           }
