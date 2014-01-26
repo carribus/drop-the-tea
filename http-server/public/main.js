@@ -22,7 +22,7 @@ cupimg.src = './img/cup.png';
 var level = levels[0], currentLevel = 0;
 
 var teaImageObj = new Image();
-teaImageObj.src = './img/bag.png';
+teaImageObj.src = './img/bag-1.png';
 
 var background = new Image();
 background.src = './img/background.png';

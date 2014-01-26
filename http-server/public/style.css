@@ -21,6 +21,24 @@ body {
 
 }
 
+button {
+	outline: none;
+}
+
+p {
+	color: #46608F;
+}
+
+a {
+	color: #46608F;
+	text-decoration: underline;
+}
+
+a:hover {
+	color: #6797CF;
+	text-decoration: none;
+}
+
 #main {
 	width: 1400px;
 	height: 900px;
@@ -51,6 +69,8 @@ video {
 	position: absolute;
 	top: 50px;
 	opacity: .4;
+	left: 50%;
+	margin-left: -700px;
 }
 
 .add-bag {
@@ -118,7 +138,7 @@ video {
 }
 .allow h2 {
 	margin: -30px -20px;
-	padding: 30px 20px 40px;
+	padding: 20px 20px 46px;
 	background: #D35400;
 	color: #F5F5F5;
 	margin-top: 70px;
