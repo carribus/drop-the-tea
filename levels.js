@@ -38,7 +38,7 @@ var levels = [
                     flip: 0,
                     position: {x: 22, y: 13},
                     r: 45,
-                    size: {w: 0.5, h: 0.5},
+                    size: {w: 1, h: 1},
                     origin: {x: .25, h: .25}
                 },
                 {
@@ -47,7 +47,7 @@ var levels = [
                     flip: 0,
                     position: {x: 24, y: 13},
                     r: 45,
-                    size: {w: 0.5, h: 0.5},
+                    size: {w: 1, h: 1},
                     origin: {x: .25, h: .25}
                 },
                 {
@@ -56,7 +56,7 @@ var levels = [
                     flip: 0,
                     position: {x: 20, y: 13},
                     r: 45,
-                    size: {w: 0.5, h: 0.5},
+                    size: {w: 1, h: 1},
                     origin: {x: .25, h: .25}
                 }            ]
       }
