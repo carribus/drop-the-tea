@@ -4,7 +4,8 @@ var DEBUG_FLAGS = {
         enabled: false,
         intensity: 0.2
     },
-    drawFrameCount: false
+    drawFrameCount: false,
+    debugDraw: false
 }
 
 var device = {
@@ -208,17 +209,19 @@ function drawCup(body) {
     var pos = body.GetPosition();
     var verts = fixture.GetShape().GetVertices();
 
-    // device.ctx.save();
-    // device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
-    // device.ctx.rotate(body.GetAngle());
-    // device.ctx.fillStyle = 'green';
-    // device.ctx.fillRect(
-    //     device.drawScale * verts[0].x,
-    //     device.drawScale * verts[0].y,
-    //     device.drawScale * verts[2].x - device.drawScale * verts[0].x,
-    //     device.drawScale * verts[2].y - device.drawScale * verts[0].y
-    // );
-    // device.ctx.restore();
+    if ( DEBUG_FLAGS.debugDraw ) {
+        device.ctx.save();
+        device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
+        device.ctx.rotate(body.GetAngle());
+        device.ctx.fillStyle = 'green';
+        device.ctx.fillRect(
+            device.drawScale * verts[0].x,
+            device.drawScale * verts[0].y,
+            device.drawScale * verts[2].x - device.drawScale * verts[0].x,
+            device.drawScale * verts[2].y - device.drawScale * verts[0].y
+        );
+        device.ctx.restore();
+    }
 
     device.ctx.save();
     //device.ctx.globalAlpha = 0.5;
@@ -535,13 +538,6 @@ function init() {
 
       //setup debug draw
       device.ctx = document.getElementById('canvas').getContext('2d');
-//      var debugDraw = new b2DebugDraw();
-//      debugDraw.SetSprite(device.ctx);
-//      debugDraw.SetDrawScale(device.drawScale);
-//      debugDraw.SetFillAlpha(0.5);
-//      debugDraw.SetLineThickness(1.0);
-//      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-//      world.SetDebugDraw(debugDraw);
 
       window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       ||
@@ -611,7 +607,6 @@ function init() {
             }
 
             // 3. Render the world
-            //world.DrawDebugDataCustom();
           if ( !DEBUG_FLAGS.motionBlurRender.enabled ) {
               device.ctx.fillStyle = 'black';
               device.ctx.fillRect(0, 0, device.width, device.height);
@@ -690,7 +685,9 @@ function init() {
 
         while(list.m_next){
           console.log(list);
-          flagForDeletion(list);
+          if ( list.m_userData && list.m_userData.render != drawWall ) {
+              flagForDeletion(list);
+          }
           list = list.m_next;
         }
       }
