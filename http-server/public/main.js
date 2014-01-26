@@ -171,7 +171,7 @@ function addBag() {
 	//create the bag
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
-	fixDef.shape = new b2CircleShape(0.7);
+	fixDef.shape = new b2CircleShape(1);
   fixDef.type = 'bag';
 	bag.position.x = 15;
 	bag.position.y = 1;
@@ -272,6 +272,11 @@ function init() {
                             bodyDef.position.y = s.position.y - 3.2;
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
+                            contactListener.on(map.m_body, function(body) {
+                              if (playsfx) {
+                                sfx.plate.play();
+                              }
+                            });
                         break;
                         case 1:
                             fixDef.restitution = 0;
@@ -297,6 +302,11 @@ function init() {
                             bodyDef.position.y = s.position.y - 3.2;
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
+                            contactListener.on(map.m_body, function(body) {
+                              if (playsfx) {
+                                sfx.plate.play();
+                              }
+                            });
                         break;
                   }
                    
@@ -333,13 +343,11 @@ function init() {
 
     function onCollectibleTouched(bodyA, bodyB) {
         console.log('collectible touched');
-        var cObj = bodyA.m_userData.collectible ? bodyA : bodyB;
-        flagForDeletion(cObj);
-        contactListener.on(map.m_body, function(body) {
-          if(playsfx){
+                  if(playsfx){
             sfx.collect.play();
           }
-        });
+        var cObj = bodyA.m_userData.collectible ? bodyA : bodyB;
+        flagForDeletion(cObj);
     }
 
     drawLevel = function(){
