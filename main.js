@@ -102,7 +102,7 @@ function addBag() {
 	//create the bag
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
-	fixDef.shape = new b2CircleShape(0.601);
+	fixDef.shape = new b2CircleShape(3);
 
 	bag.position.x = 15;
 	bag.position.y = 1;
