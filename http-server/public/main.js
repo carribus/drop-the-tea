@@ -9,7 +9,7 @@ var DEBUG_FLAGS = {
 
 var peg, bag;
 
-var level = levels[0]
+var level = levels[0], currentLevel = 0;
 
 var teaImageObj = new Image();
 teaImageObj.src = './img/teabag.png';
@@ -47,6 +47,17 @@ fixDef.friction = 0.5;
 fixDef.restitution = 0.4;
 
 var bodyDef = new b2BodyDef;
+
+    function flagForDeletion(obj) {
+        objectsToBeDeleted.push(obj);
+    }
+
+    function processObjectsForDeletion() {
+        for ( var i = objectsToBeDeleted.length-1; i >= 0; i-- ) {
+            world.DestroyBody(objectsToBeDeleted[i]);
+        }
+        objectsToBeDeleted = [];
+    }
 
 /*
  * Collision Listener object
@@ -254,26 +265,16 @@ function init() {
             s.fixture.m_body.SetAngularVelocity(s.av);
         }
         fixDef.isSensor = false;
-        contactListener.on(map.m_body, function(body) {
-          sfx.collect.play();
-        });
+
     }
 
     function onCollectibleTouched(bodyA, bodyB) {
         console.log('collectible touched');
         var cObj = bodyA.m_userData.collectible ? bodyA : bodyB;
         flagForDeletion(cObj);
-    }
-
-    function flagForDeletion(obj) {
-        objectsToBeDeleted.push(obj);
-    }
-
-    function processObjectsForDeletion() {
-        for ( var i = objectsToBeDeleted.length-1; i >= 0; i-- ) {
-            world.DestroyBody(objectsToBeDeleted[i]);
-        }
-        objectsToBeDeleted = [];
+        contactListener.on(map.m_body, function(body) {
+          sfx.collect.play();
+        });
     }
 
       for(var i = 0; i < level.shapes.length; i++){
@@ -425,6 +426,21 @@ function init() {
               ctx.restore();
           }
 
+          if(world.m_jointList){
+            ctx = document.getElementById('canvas').getContext('2d');
+            var j = world.m_jointList;
+            ctx.save();
+            while(j){
+              ctx.moveTo(j.m_bodyA.m_xf.position.x * 20, j.m_bodyA.m_xf.position.y * 20);
+              ctx.lineTo(j.m_bodyB.m_xf.position.x * 20, j.m_bodyB.m_xf.position.y * 20);
+                    ctx.strokeStyle = '#ff0000';
+      ctx.stroke();
+              j = world.m_jointList.m_next;
+            }
+            ctx.restore();
+
+          }
+
           processObjectsForDeletion();
 
       };
@@ -458,5 +474,14 @@ function init() {
             };
       }
 
-
 };
+
+      function removeBodys(){
+        var list = world.m_bodyList;
+
+        while(list.m_next){
+          console.log(list);
+          flagForDeletion(list);
+          list = list.m_next;
+        }
+      }
