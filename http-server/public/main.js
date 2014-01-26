@@ -202,8 +202,6 @@ function drawBall(body) {
     device.ctx.save();
     device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
     device.ctx.fillStyle = '#5f7fa3';
-    device.ctx.lineWidth = 5;
-    device.ctx.strokeStyle = '#86BECC';
     device.ctx.beginPath();
     device.ctx.arc(0, 0, radius*device.drawScale, 0, 2 * Math.PI, false);
     device.ctx.fill();
@@ -653,11 +651,12 @@ function init() {
               while (j) {
                 device.ctx.moveTo(j.m_bodyA.m_xf.position.x * device.drawScale, j.m_bodyA.m_xf.position.y * device.drawScale);
                 device.ctx.lineTo(j.m_bodyB.m_xf.position.x * device.drawScale, j.m_bodyB.m_xf.position.y * device.drawScale);
-                device.ctx.strokeStyle = '#ff0000';
+                device.ctx.lineWidth = 4;
+                device.ctx.strokeStyle = 'white';
                 device.ctx.stroke();
                 j = j.m_next;
               }
-              device.ctx.restore();
+              device.ctx.strokeStyle = 'transparent';
             }
 
             if ( DEBUG_FLAGS.drawFrameCount ) {
