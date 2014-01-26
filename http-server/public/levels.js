@@ -84,7 +84,7 @@ var levels = [
                     flip: 0,
                     position: {x: 24, y: 13},
                     r: 0,
-                    size: {w: 0.5, h: 0.5},
+                    size: {w: 0.8, h: 0.8},
                     origin: {x: .25, h: .25}
                 },
                 {
@@ -93,7 +93,7 @@ var levels = [
                     flip: 0,
                     position: {x: 20, y: 13},
                     r: 0,
-                    size: {w: 0.5, h: 0.5},
+                    size: {w: 0.8, h: 0.8},
                     origin: {x: .25, h: .25}
                 }
 
@@ -127,13 +127,13 @@ var levels = [
                     velocity: {x: -10, y: 0},
                     flip: 100,
                     position: {x: 14, y: 12}
-                },  
+                },
                    {
                     type: 'c', // maze ball
                     velocity: {x: 10, y: 0},
                     flip: 200,
                     position: {x: 34, y: 12}
-                },  
+                },
                 {     // thy CUP
                     type: 'cup', // bottom
                     velocity: {x: 2, y: 0},

@@ -22,13 +22,16 @@ cupimg.src = './img/cup.png';
 var level = levels[0], currentLevel = 0;
 
 var teaImageObj = new Image();
-teaImageObj.src = './img/bag-1.png';
+teaImageObj.src = './img/bag-3.png';
+
+var ropeImageObj = new Image();
+ropeImageObj.src = './img/rope.png';
 
 var background = new Image();
 background.src = './img/background.png';
 
 var sugarCubeObj = new Image();
-sugarCubeObj.src = './img/sugarcube.jpeg';
+sugarCubeObj.src = './img/sugar.png';
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
       b2AABB = Box2D.Collision.b2AABB,

@@ -164,11 +164,27 @@ video {
 	font-size: 76px;
 }
 
-.allow img {
+.allow img.bag {
 	position: absolute;
 	top: 50px;
 	-webkit-transform: rotate(-35deg);
+	-webkit-transform: rotate(-35deg);
+	-moz-transform: rotate(-35deg);
+	-ms-transform: rotate(-35deg);
+	-o-transform: rotate(-35deg);
+	transform: rotate(-35deg);
 	right: 360px;
+}
+.allow img.rope {
+	position: absolute;
+	top: -116px;
+	-webkit-transform: rotate(-35deg);
+	-webkit-transform: rotate(-35deg);
+	-moz-transform: rotate(-35deg);
+	-ms-transform: rotate(-35deg);
+	-o-transform: rotate(-35deg);
+	transform: rotate(-35deg);
+	right: 496px;
 }
 
 .allow h2 {
