@@ -89,8 +89,24 @@ ContactListener.prototype.once = function(body, listener) {
     this.listeners.push({"body": body, "once": true, "listener": listener});
 }
 
+function whichbody(type, a, b){
+  if(a.m_userData.type === type){
+    return a;
+  }else if(b.m_userData.type === type){
+    return b;
+  }
+}
+
 ContactListener.prototype.notify = function(body, otherBody) {
     var listener;
+
+    var bag = whichbody('bag', body, otherBody);
+    var cup = whichbody('bottom', body, otherBody);
+
+    if(bag && cup){
+      flagForDeletion(bag);
+    }
+
     for ( var i = 0, len = this.listeners.length; i < len; i++ ) {
         if ( body == this.listeners[i].body || otherBody == this.listeners[i].body ) {
             listener = this.listeners[i].listener;
@@ -256,7 +272,7 @@ function addBag() {
   fixDef.type = 'bag';
 	bag.position.x = 15;
 	bag.position.y = 1;
-    bag.userData = { render: drawTeabag };
+    bag.userData = { render: drawTeabag, type:'bag' };
 	bag = world.CreateBody(bag).CreateFixture(fixDef);
   bag.m_body.type = 'bag';
 
@@ -368,7 +384,7 @@ function init() {
                             fixDef.shape.SetAsBox(s.size.w - 1.78, 2);   
                             bodyDef.position.x = s.position.x - 1.78;
                             bodyDef.position.y = s.position.y - 1.2;
-                            bodyDef.userData = {render: drawCup};
+                            bodyDef.userData = {render: drawCup, type: 'bottom'};
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
                             contactListener.on(map.m_body, function(body) {
@@ -378,7 +394,7 @@ function init() {
                                 document.getElementById('happy').style.display = 'block';
                                 setTimeout(function(){
                                   document.getElementById('happy').style.display = 'none';
-                                }, 50);
+                                }, 10);
                             });
                             fixDef.restitution = 0.4;
                             cupbody = map;
@@ -502,7 +518,7 @@ function init() {
         document.getElementById('sad').style.display = 'block';
         setTimeout(function(){
           document.getElementById('sad').style.display = 'none';
-        }, 50);
+        }, 10);
         if(playsfx){
           sfx.no.play();
         }
