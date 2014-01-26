@@ -252,7 +252,7 @@ function addBag() {
 	//create the bag
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
-	fixDef.shape = new b2CircleShape(1);
+	fixDef.shape = new b2CircleShape(2);
   fixDef.type = 'bag';
 	bag.position.x = 15;
 	bag.position.y = 1;
@@ -448,7 +448,7 @@ function init() {
 
     function onCollectibleTouched(bodyA, bodyB) {
         console.log('collectible touched');
-                  if(playsfx){
+          if(playsfx){
             sfx.collect.play();
           }
         var cObj = bodyA.m_userData.collectible ? bodyA : bodyB;
@@ -607,10 +607,11 @@ function init() {
             }
 
             // 3. Render the world
-          if ( !DEBUG_FLAGS.motionBlurRender.enabled ) {
-              device.ctx.fillStyle = 'black';
-              device.ctx.fillRect(0, 0, device.width, device.height);
-          }
+          // if ( !DEBUG_FLAGS.motionBlurRender.enabled ) {
+          //     device.ctx.fillStyle = 'black';
+          //     device.ctx.fillRect(0, 0, device.width, device.height);
+          // }
+           device.ctx.clearRect(0, 0, device.width, device.height);
 
           for ( var b = world.GetBodyList(); b; b = b.m_next ) {
               if ( b.m_userData ) {
@@ -684,7 +685,6 @@ function init() {
         var list = world.m_bodyList;
 
         while(list.m_next){
-          console.log(list);
           if ( list.m_userData && list.m_userData.render != drawWall ) {
               flagForDeletion(list);
           }
