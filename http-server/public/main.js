@@ -202,6 +202,7 @@ function drawBall(body) {
     device.ctx.save();
     device.ctx.translate(pos.x * device.drawScale, pos.y * device.drawScale);
     device.ctx.fillStyle = '#5f7fa3';
+    device.ctx.strokeStyle = '#5f7fa3';
     device.ctx.beginPath();
     device.ctx.arc(0, 0, radius*device.drawScale, 0, 2 * Math.PI, false);
     device.ctx.fill();
@@ -315,7 +316,7 @@ function init() {
 
       function addc(s){
             fixDef.shape = new b2CircleShape(
-                  s.radius //radius
+                  s.radius || 1//radius
             );  
 
             bodyDef.position.x = s.position.x;
@@ -378,6 +379,7 @@ function init() {
                                 sfx.plate.play();
                               }
                             });
+                            s.fixture.push(map);
                         break;
                         case 1:
                             fixDef.restitution = 0;
@@ -392,7 +394,7 @@ function init() {
                                   sfx.cup.play();
                                 }
 
-                                for(var j = 0; j < 5; j++){
+                                for(var j = 0; j < 3; j++){
                                 setTimeout(function(){
                                   document.getElementById('happy').style.display = 'block';
                                   setTimeout(function(){
@@ -406,6 +408,7 @@ function init() {
                             });
                             fixDef.restitution = 0.4;
                             cupbody = map;
+                            s.fixture.push(map);
                         break;
                         case 2:
                             fixDef.shape.SetAsBox(0.5, 4);   
@@ -419,6 +422,7 @@ function init() {
                                 sfx.plate.play();
                               }
                             });
+                            s.fixture.push(map);
                         break;
                         case 3:
                             fixDef.shape.SetAsBox(s.size.w + 1.4, 1.1);
@@ -434,10 +438,10 @@ function init() {
                                 sfx.plate.play();
                               }
                             });
+                            s.fixture.push(map);
                             break;
                   }
                    
-                  s.fixture = map;
                   if(s.av){
                     s.fixture.m_body.SetAngularVelocity(s.av);    
                   }                      
@@ -501,6 +505,7 @@ function init() {
                         addb(level.shapes[i]);
                   break;
                   case 'cup':
+                        level.shapes[i].fixture = [];
                         cups.push(addcup(level.shapes[i]));
                   break;
                 case 'collectible':
@@ -625,8 +630,20 @@ function init() {
             for(var i = 0; i < level.shapes.length; i++){
                 if(!level.shapes[i].flip) continue;
                 if(frame % level.shapes[i].flip === 0){
+                  console.log(level.shapes[i].fixture.length);
+                  if(level.shapes[i].fixture.length === undefined){
                     velocity = level.shapes[i].fixture.m_body.GetLinearVelocity();
-                    level.shapes[i].fixture.m_body.SetLinearVelocity(new b2Vec2(-velocity.x, velocity.y));
+                    level.shapes[i].fixture.m_body.SetLinearVelocity(new b2Vec2(-velocity.x, -velocity.y));
+
+                  }else{
+
+                    for(var j = 0; j < level.shapes[i].fixture.length; j++){
+                      velocity = level.shapes[i].fixture[j].m_body.GetLinearVelocity();
+                      level.shapes[i].fixture[j].m_body.SetLinearVelocity(new b2Vec2(-velocity.x, -velocity.y));
+
+                    }
+
+                  }
                 }
             }
 
@@ -656,7 +673,7 @@ function init() {
                 device.ctx.stroke();
                 j = j.m_next;
               }
-              device.ctx.strokeStyle = 'transparent';
+              device.ctx.strokeStyle = '#5f7fa3';
             }
 
             if ( DEBUG_FLAGS.drawFrameCount ) {
