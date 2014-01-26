@@ -4,13 +4,20 @@
    <head>
       <title>Drop the Tea</title>
       <link href="/style.css" rel="stylesheet">
+      <!--[if gte IE 9]>
+      <style type="text/css">
+       .gradient {
+          filter: none;
+       }
+      </style>
+      <![endif]-->
    </head>
 
-   <body>
+   <body class="gradient">
 
       <div id="main">
       
-         <video id="video" width="1000" height="600" autoplay></video>
+         <video id="video" width="1400" height="800" autoplay></video>
          <canvas id="vidcan" width="640" height="480"></canvas>
 
          <canvas id="canvas" width="1400" height="900"></canvas>
@@ -18,18 +25,38 @@
          <button class="add-bag" onclick="addBag()">Add Bag</button>
          <!-- <button class="snap-photo" id="snap">Snap Photo</button> -->
 
-         <div class="camera" id="camera1">
-            <h1>Allow Camera Access Above</h1>
-            <button onclick="next('camera1','camera2')">OK</button>
+         <div class="camera allow" id="camera1">
+            <h1>Drop the Tea</h1>
+
+            <h2>Allow Camera Access Above</h2>
+
+            <button onclick="next('camera1','camera2')">Start Game</button>
+
+            <div class="footer">
+                  
+               <p>An weekend hackathon production, in <a href="https://twitter.com/odobo" target="_blank">@odobo</a> office...</p>
+
+               <p>Starring <a href="https://twitter.com/carribus" target="_blank">@carribus</a>, <a href="https://twitter.com/dcoheny" target="_blank">@dcoheny</a>, <a href="https://twitter.com/javimaravillas" target="_blank">@javimaravillas</a> and <a href="https://twitter.com/AlexandruBiet" target="_blank">@AlexandruBiet</a>...</p>
+
+               <p>With the intent of submiting the game to <a href="http://globalgamejam.org/">Globe Game Jam 2014</a> (<a href="https://twitter.com/search?q=%23ggj14&src=typd" target="_blank">#GGJ14</a>) and the reality of submiting it to <a href="http://poormansggj.weebly.com/" target="_blank" target="_blank">Poor Man's Globe Game Jam</a> instead.</p>
+
+               <p><b>Theme: <i>"We don't see things as they are, we see them as we are" and "Tea".</b></i></p>
+            
+            </div>
          </div>
 
-         <div class="camera hide" id="camera2">
-            <h1>Make a Happy Face</h1>
+         <div class="camera happy hide" id="camera2">
+
+            <h1>Make a Happy Face (:</h1>
             <button onclick="next('camera2','camera3', 'happy')" id="camera1">OK</button>
+
+
+
+            
          </div>
 
-         <div class="camera hide" id="camera3">
-            <h1>Make a Sad Face</h1>
+         <div class="camera sad hide" id="camera3">
+            <h1>Make a Sad Face ):</h1>
             <button onclick="next('camera3', '', 'sad')" id="camera1">OK</button>
          </div>
 
