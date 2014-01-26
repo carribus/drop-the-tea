@@ -221,6 +221,7 @@ function drawCup(body) {
     // device.ctx.restore();
 
     device.ctx.save();
+    //device.ctx.globalAlpha = 0.5;
     for (var i = 0; i < cups.length; i++) {
       device.ctx.drawImage(cupimg, 0, 0, cupimg.width, cupimg.height, (cups[i].m_body.m_xf.position.x - 8.4) * device.drawScale, (cups[i].m_body.m_xf.position.y - 6) * device.drawScale, cupimg.width, cupimg.height);
     }
@@ -343,7 +344,7 @@ function init() {
 
       function addcup(s){
         var cupbody, map;
-            for(var i = 0; i < 3; i++){
+            for(var i = 0; i < 4; i++){
                   fixDef.shape = new b2PolygonShape;
                   switch(i){
                         case 0:
@@ -392,6 +393,21 @@ function init() {
                               }
                             });
                         break;
+                        case 3:
+                            fixDef.shape.SetAsBox(s.size.w + 1.4, 1.1);
+                            bodyDef.position.x = s.position.x - 1.78;
+                            bodyDef.position.y = s.position.y - 0.7;
+                            bodyDef.userData = {
+                              render: drawCup
+                            };
+                            map = world.CreateBody(bodyDef).CreateFixture(fixDef);
+                            map.m_body.SetLinearVelocity(new b2Vec2(s.velocity.x, s.velocity.y));
+                            contactListener.on(map.m_body, function(body) {
+                              if (playsfx) {
+                                sfx.plate.play();
+                              }
+                            });
+                            break;
                   }
                    
                   s.fixture = map;
