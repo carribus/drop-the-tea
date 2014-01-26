@@ -69,6 +69,8 @@ video {
 	position: absolute;
 	top: 50px;
 	opacity: .4;
+	left: 50%;
+	margin-left: -700px;
 }
 
 .add-bag {
