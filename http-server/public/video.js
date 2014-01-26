@@ -45,7 +45,7 @@ function next(a, b, id){
       b.style.display = 'block';
    }else{
       init();
-      toggletheme();
+      //toggletheme();
    }
 
    if(id){
@@ -66,7 +66,8 @@ sfx = {
    cup: new Howl({ urls: ['sound/cup.mp3'] }),
    stir: new Howl({ urls: ['sound/stir.mp3'] }),
    collect: new Howl({ urls: ['sound/collect.mp3'] }),
-   no: new Howl({ urls: ['sound/no.mp3'] })
+   no: new Howl({ urls: ['sound/no.mp3'] }),
+   plate: new Howl({ urls: ['sound/plate.mp3'] })
 };
 
 function toggletheme(){

@@ -120,6 +120,7 @@ contactListener.EndContact = function(contact) {
 
 function drawWall(body) {
     var fixture = body.m_fixtureList;
+    if(fixture.GetShape() instanceof b2CircleShape) return;
     var pos = body.GetPosition();
     var verts = fixture.GetShape().GetVertices();
 
@@ -137,6 +138,7 @@ function drawWall(body) {
 
 function drawPeg(body) {
     var fixture = body.m_fixtureList;
+
     var pos = body.GetPosition();
     var radius = fixture.GetShape().GetRadius();
 
@@ -151,6 +153,7 @@ function drawPeg(body) {
 
 function drawPlatform(body) {
     var fixture = body.m_fixtureList;
+    if(fixture.GetShape() instanceof b2CircleShape) return;
     var pos = body.GetPosition();
     var localverts = fixture.GetShape().GetVertices();
     var verts = [];
@@ -240,7 +243,7 @@ function addBag() {
 	//create the bag
 	bag = new b2BodyDef;
 	bag.type = b2Body.b2_dynamicBody;
-	fixDef.shape = new b2CircleShape(0.7);
+	fixDef.shape = new b2CircleShape(1);
   fixDef.type = 'bag';
 	bag.position.x = 15;
 	bag.position.y = 1;
@@ -344,6 +347,11 @@ function init() {
                             bodyDef.userData = {render: drawCup};
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
+                            contactListener.on(map.m_body, function(body) {
+                              if (playsfx) {
+                                sfx.plate.play();
+                              }
+                            });
                         break;
                         case 1:
                             fixDef.restitution = 0;
@@ -371,6 +379,11 @@ function init() {
                             bodyDef.userData = {render: drawCup};
                             map = world.CreateBody(bodyDef).CreateFixture(fixDef);
                             map.m_body.SetLinearVelocity (new b2Vec2(s.velocity.x, s.velocity.y));
+                            contactListener.on(map.m_body, function(body) {
+                              if (playsfx) {
+                                sfx.plate.play();
+                              }
+                            });
                         break;
                   }
                    
@@ -407,13 +420,11 @@ function init() {
 
     function onCollectibleTouched(bodyA, bodyB) {
         console.log('collectible touched');
-        var cObj = bodyA.m_userData.collectible ? bodyA : bodyB;
-        flagForDeletion(cObj);
-        contactListener.on(map.m_body, function(body) {
-          if(playsfx){
+                  if(playsfx){
             sfx.collect.play();
           }
-        });
+        var cObj = bodyA.m_userData.collectible ? bodyA : bodyB;
+        flagForDeletion(cObj);
     }
 
     drawLevel = function(){
@@ -516,7 +527,7 @@ function init() {
 })();
 
       //window.setInterval(update, 1000 / 60);
-    window.requestAnimFrame(update);
+      window.requestAnimFrame(update);
 
       //mouse
 
@@ -559,10 +570,9 @@ function init() {
       function update() {
             window.requestAnimFrame(update);
             frame++;
-            world.Step(1 / 30, 10, 10);
 
             // 1. Step the world
-            world.Step(1 / 30, 10, 10);
+            world.Step(1 / 25, 10, 10);
             world.ClearForces();
 
             // 2. Update the world
