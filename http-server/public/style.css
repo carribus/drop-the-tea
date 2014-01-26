@@ -74,14 +74,16 @@ video {
 }
 
 .add-bag {
-	background: #22DA5D;
-	border: 2px solid #00A23A;
-	padding: 20px;
-	color: #005E00;
 	position: absolute;
 	right: 30px;
 	top: 30px;
-	font-size: 16px;
+	background: #2ECC71;
+	border: 0;
+	padding: 20px 40px;
+	font-size: 30px;
+	border-radius: 30px;
+	font-family: Hannotate SC;
+	color: #FFF;
 }
 
 
@@ -94,6 +96,32 @@ video {
 	left: 1252px;
 	top: 112px;
 	font-size: 16px;
+}
+
+.music {
+	position: absolute;
+	left: 30px;
+	top: 30px;
+	background: #2ECC71;
+	border: 0;
+	padding: 1px 10px 2px;
+	font-size: 30px;
+	border-radius: 30px;
+	font-family: Hannotate SC;
+	color: #FFF;
+}
+
+.next-level {
+	position: absolute;
+	left: 100px;
+	top: 30px;
+	background: #2ECC71;
+	border: 0;
+	padding: 10px 20px;
+	font-size: 20px;
+	border-radius: 30px;
+	font-family: Hannotate SC;
+	color: #FFF;
 }
 
 .camera, .happy, .sad{
